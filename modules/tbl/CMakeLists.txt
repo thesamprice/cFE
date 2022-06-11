@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_TBL C)
+project(CFE_TBL C CXX)
 
 # Table Services source files
 set(tbl_SOURCES

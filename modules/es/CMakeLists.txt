@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_ES C)
+project(CFE_ES C CXX)
 
 # Executive services source files
 set(es_SOURCES

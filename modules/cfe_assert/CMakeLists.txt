@@ -1,4 +1,4 @@
-project(CFE_ASSERT C)
+project(CFE_ASSERT C CXX)
 
 # Create the app module
 add_cfe_app(cfe_assert

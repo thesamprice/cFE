@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_SB C)
+project(CFE_SB C CXX)
 
 # Software Bus source files
 set(sb_SOURCES

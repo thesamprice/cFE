@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_RESOURCEID C)
+project(CFE_RESOURCEID C CXX)
 
 # Module library
 set(resourceid_SOURCES

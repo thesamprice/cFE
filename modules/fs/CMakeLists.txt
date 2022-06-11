@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_FS C)
+project(CFE_FS C CXX)
 
 # File services source files
 set(fs_SOURCES

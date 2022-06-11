@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_TIME C)
+project(CFE_TIME C CXX)
 
 # Time Services source files
 set(time_SOURCES

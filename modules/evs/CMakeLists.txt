@@ -4,7 +4,7 @@
 #
 ##################################################################
 
-project(CFE_EVS C)
+project(CFE_EVS C CXX)
 
 # Event services source files
 set(evs_SOURCES

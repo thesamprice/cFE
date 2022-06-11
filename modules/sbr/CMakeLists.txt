@@ -13,7 +13,7 @@
 #
 ##################################################################
 
-project(CFE_SBR C)
+project(CFE_SBR C CXX)
 
 if (NOT MISSION_MSGMAP_IMPLEMENTATION)
     set(MISSION_MSGMAP_IMPLEMENTATION "DIRECT")

@@ -10,7 +10,7 @@
 #
 ##################################################################
 
-project(CFETARGET C)
+project(CFETARGET C CXX)
 
 # Sanity check on inputs - these should be set in the parent script(s)
 if (NOT DEFINED TGTNAME)
