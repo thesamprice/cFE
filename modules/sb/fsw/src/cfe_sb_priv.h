@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -90,12 +88,14 @@
 #define CFE_SB_FILE_IO_ERR   (-5)
 
 /* bit map for stopping recursive event problem */
-#define CFE_SB_SEND_NO_SUBS_EID_BIT  0
-#define CFE_SB_GET_BUF_ERR_EID_BIT   1
-#define CFE_SB_MSGID_LIM_ERR_EID_BIT 2
-#define CFE_SB_Q_FULL_ERR_EID_BIT    3
-#define CFE_SB_Q_WR_ERR_EID_BIT      4
-
+#define CFE_SB_SEND_NO_SUBS_EID_BIT   0
+#define CFE_SB_GET_BUF_ERR_EID_BIT    1
+#define CFE_SB_MSGID_LIM_ERR_EID_BIT  2
+#define CFE_SB_Q_FULL_ERR_EID_BIT     3
+#define CFE_SB_Q_WR_ERR_EID_BIT       4
+#define CFE_SB_SEND_BAD_ARG_EID_BIT   5
+#define CFE_SB_SEND_INV_MSGID_EID_BIT 6
+#define CFE_SB_MSG_TOO_BIG_EID_BIT    7
 /*
 ** Type Definitions
 */
@@ -691,7 +691,7 @@ int32 CFE_SB_ZeroCopyBufferValidate(CFE_SB_Buffer_t *BufPtr, CFE_SB_BufferD_t **
  * \note Assumes destination pointer is valid
  *
  * \param[in] RouteId The route ID to add destination node to
- * \param[in] DestPtr Pointer to the destination to add
+ * \param[in] NewNode Pointer to the destination to add
  */
 int32 CFE_SB_AddDestNode(CFE_SBR_RouteId_t RouteId, CFE_SB_DestinationD_t *NewNode);
 
@@ -703,8 +703,8 @@ int32 CFE_SB_AddDestNode(CFE_SBR_RouteId_t RouteId, CFE_SB_DestinationD_t *NewNo
  *
  * \note Assumes destination pointer is valid and in route
  *
- * \param[in] RouteId The route ID to remove destination node from
- * \param[in] DestPtr Pointer to the destination to remove
+ * \param[in] RouteId      The route ID to remove destination node from
+ * \param[in] NodeToRemove Pointer to the destination to remove
  */
 void CFE_SB_RemoveDestNode(CFE_SBR_RouteId_t RouteId, CFE_SB_DestinationD_t *NodeToRemove);
 
@@ -920,7 +920,7 @@ int32 CFE_SB_SendPrevSubsCmd(const CFE_SB_SendPrevSubsCmd_t *data);
  * @param[in]   PipeId   the Pipe ID to locate
  * @return pointer to Pipe Table entry for the given Pipe ID
  */
-extern CFE_SB_PipeD_t *CFE_SB_LocatePipeDescByID(CFE_SB_PipeId_t PipeId);
+CFE_SB_PipeD_t *CFE_SB_LocatePipeDescByID(CFE_SB_PipeId_t PipeId);
 
 /*---------------------------------------------------------------------------------------*/
 /**

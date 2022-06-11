@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: tbl_content_mang_test.c
-**
-** Purpose:
-**   Functional test of Table Manage Content APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of Table Manage Content APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -68,6 +64,7 @@ void TestLoad(void)
     TBL_TEST_Table_t  TestTable     = {0xd00d, 0xdad};
     TBL_TEST_Table_t *TablePtr;
     CFE_TBL_Handle_t  OtherHandle;
+    void *            TempPtr;
 
     UtPrintf("Testing: CFE_TBL_Load");
 
@@ -107,7 +104,8 @@ void TestLoad(void)
     UtAssert_INT32_EQ(CFE_TBL_Load(CFE_FT_Global.TblHandle, CFE_TBL_SRC_FILE, TESTTBL_NOMINAL_FILE), CFE_SUCCESS);
 
     /* confirm content (football) */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0xf007);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0xba11);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
@@ -117,7 +115,8 @@ void TestLoad(void)
                       CFE_TBL_ERR_FILE_TOO_LARGE);
 
     /* confirm content again (note content should not have been updated) */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_SUCCESS);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0xf007);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0xba11);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
@@ -126,7 +125,8 @@ void TestLoad(void)
     UtAssert_INT32_EQ(CFE_TBL_Load(CFE_FT_Global.TblHandle, CFE_TBL_SRC_FILE, TESTTBL_ALTERNATE_FILE), CFE_SUCCESS);
 
     /* confirm content again (changed to alternate data) */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0xdead);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0xbeef);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
@@ -136,7 +136,8 @@ void TestLoad(void)
                       CFE_TBL_ERR_LOAD_INCOMPLETE);
 
     /* confirm content again (should not be changed) */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_SUCCESS);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0xdead);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0xbeef);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
@@ -145,13 +146,15 @@ void TestLoad(void)
     UtAssert_INT32_EQ(CFE_TBL_Load(OtherHandle, CFE_TBL_SRC_FILE, TESTTBL_OTHERTBL_FILE), CFE_SUCCESS);
 
     /* confirm content of first table again (should not be changed) */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_SUCCESS);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0xdead);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0xbeef);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
 
     /* confirm content of other table (boatload) */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, OtherHandle), CFE_TBL_INFO_UPDATED);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, OtherHandle), CFE_TBL_INFO_UPDATED);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0xb0a7);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0x10ad);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(OtherHandle), CFE_SUCCESS);
@@ -161,7 +164,8 @@ void TestLoad(void)
 
     /* confirm content again (reported as updated from partial load) */
     /* Should have updated the first word only */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0x5555);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0xbeef);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
@@ -171,7 +175,8 @@ void TestLoad(void)
 
     /* confirm content again (reported as updated from partial load) */
     /* Should have updated the second word only */
-    UtAssert_INT32_EQ(CFE_TBL_GetAddress((void **)&TablePtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TempPtr, CFE_FT_Global.TblHandle), CFE_TBL_INFO_UPDATED);
+    TablePtr = TempPtr;
     UtAssert_UINT32_EQ(TablePtr->Int1, 0x5555);
     UtAssert_UINT32_EQ(TablePtr->Int2, 0x6666);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_SUCCESS);
@@ -271,8 +276,8 @@ void TblTest_UpdateOffset(CFE_ES_MemOffset_t *TgtVal, CFE_ES_MemOffset_t SetVal)
  */
 void TblTest_GenerateTblFiles(void)
 {
-    osal_id_t fh1;
-    osal_id_t fh2;
+    osal_id_t fh1 = OS_OBJECT_ID_UNDEFINED;
+    osal_id_t fh2 = OS_OBJECT_ID_UNDEFINED;
     uint32    PartialOffset;
     uint32    PartialSize;
     union

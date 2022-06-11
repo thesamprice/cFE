@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File: cfe_tbl_task_cmds.c
@@ -62,8 +60,8 @@ int32 CFE_TBL_HousekeepingCmd(const CFE_MSG_CommandHeader_t *data)
     /*
     ** Send housekeeping telemetry packet
     */
-    CFE_SB_TimeStampMsg(&CFE_TBL_Global.HkPacket.TlmHeader.Msg);
-    Status = CFE_SB_TransmitMsg(&CFE_TBL_Global.HkPacket.TlmHeader.Msg, true);
+    CFE_SB_TimeStampMsg(CFE_MSG_PTR(CFE_TBL_Global.HkPacket.TelemetryHeader));
+    Status = CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TBL_Global.HkPacket.TelemetryHeader), true);
 
     if (Status != CFE_SUCCESS)
     {
@@ -79,8 +77,8 @@ int32 CFE_TBL_HousekeepingCmd(const CFE_MSG_CommandHeader_t *data)
         /*
         ** Send Table Registry Info Packet
         */
-        CFE_SB_TimeStampMsg(&CFE_TBL_Global.TblRegPacket.TlmHeader.Msg);
-        CFE_SB_TransmitMsg(&CFE_TBL_Global.TblRegPacket.TlmHeader.Msg, true);
+        CFE_SB_TimeStampMsg(CFE_MSG_PTR(CFE_TBL_Global.TblRegPacket.TelemetryHeader));
+        CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TBL_Global.TblRegPacket.TelemetryHeader), true);
 
         /* Once the data has been sent, clear the index so that we don't send it again and again */
         CFE_TBL_Global.HkTlmTblRegIndex = CFE_TBL_NOT_FOUND;
@@ -362,7 +360,7 @@ int32 CFE_TBL_LoadCmd(const CFE_TBL_LoadCmd_t *data)
     const CFE_TBL_LoadCmd_Payload_t *CmdPtr     = &data->Payload;
     CFE_FS_Header_t                  StdFileHeader;
     CFE_TBL_File_Hdr_t               TblFileHeader;
-    osal_id_t                        FileDescriptor;
+    osal_id_t                        FileDescriptor = OS_OBJECT_ID_UNDEFINED;
     int32                            Status;
     int32                            OsStatus;
     int16                            RegIndex;
@@ -700,7 +698,7 @@ CFE_TBL_CmdProcRet_t CFE_TBL_DumpToFile(const char *DumpFilename, const char *Ta
     bool                 FileExistedPrev = false;
     CFE_FS_Header_t      StdFileHeader;
     CFE_TBL_File_Hdr_t   TblFileHeader;
-    osal_id_t            FileDescriptor;
+    osal_id_t            FileDescriptor = OS_OBJECT_ID_UNDEFINED;
     int32                Status;
     int32                OsStatus;
     int32                EndianCheck = 0x01020304;

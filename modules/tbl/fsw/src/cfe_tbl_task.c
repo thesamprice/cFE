@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File: cfe_tbl_task.c
@@ -238,14 +236,15 @@ void CFE_TBL_InitData(void)
     CFE_ES_GetAppID(&CFE_TBL_Global.TableTaskAppId);
 
     /* Initialize Packet Headers */
-    CFE_MSG_Init(&CFE_TBL_Global.HkPacket.TlmHeader.Msg, CFE_SB_ValueToMsgId(CFE_TBL_HK_TLM_MID),
+    CFE_MSG_Init(CFE_MSG_PTR(CFE_TBL_Global.HkPacket.TelemetryHeader), CFE_SB_ValueToMsgId(CFE_TBL_HK_TLM_MID),
                  sizeof(CFE_TBL_Global.HkPacket));
 
-    CFE_MSG_Init(&CFE_TBL_Global.TblRegPacket.TlmHeader.Msg, CFE_SB_ValueToMsgId(CFE_TBL_REG_TLM_MID),
+    CFE_MSG_Init(CFE_MSG_PTR(CFE_TBL_Global.TblRegPacket.TelemetryHeader), CFE_SB_ValueToMsgId(CFE_TBL_REG_TLM_MID),
                  sizeof(CFE_TBL_Global.TblRegPacket));
 
     /* Message ID is set when sent, so OK as 0 here */
-    CFE_MSG_Init(&CFE_TBL_Global.NotifyMsg.CmdHeader.Msg, CFE_SB_ValueToMsgId(0), sizeof(CFE_TBL_Global.NotifyMsg));
+    CFE_MSG_Init(CFE_MSG_PTR(CFE_TBL_Global.NotifyMsg.CommandHeader), CFE_SB_INVALID_MSG_ID,
+                 sizeof(CFE_TBL_Global.NotifyMsg));
 }
 
 /*----------------------------------------------------------------

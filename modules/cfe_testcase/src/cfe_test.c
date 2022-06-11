@@ -1,30 +1,26 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: cfe_test.c
-**
-** Purpose:
-**   Initialization routine for CFE functional test
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Initialization routine for CFE functional test
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -41,6 +37,9 @@ CFE_FT_Global_t CFE_FT_Global;
  */
 void CFE_TestMain(void)
 {
+    /* Static local so data section is not zero when checking app info */
+    static char TestName[] = "CFE API";
+
     /* Constant Table information used by all table tests */
     CFE_FT_Global.TblName           = "TestTable";
     CFE_FT_Global.RegisteredTblName = "CFE_TEST_APP.TestTable";
@@ -52,7 +51,7 @@ void CFE_TestMain(void)
      * Note this also waits for the appropriate overall system
      * state and gets ownership of the UtAssert subsystem
      */
-    CFE_Assert_RegisterTest("CFE API");
+    CFE_Assert_RegisterTest(TestName);
     CFE_Assert_OpenLogFile(CFE_ASSERT_LOG_FILE_NAME);
 
     /*

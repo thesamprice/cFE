@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File:
@@ -652,6 +650,8 @@ void Test_Format(void)
     UT_EVS_MSGInitData_t MsgData;
     CFE_MSG_Message_t *  MsgSend;
 
+    memset(&modecmd, 0, sizeof(modecmd));
+
     /* Get a local ref to the "current" AppData table entry */
     EVS_GetCurrentContext(&AppDataPtr, &AppID);
 
@@ -762,6 +762,8 @@ void Test_Ports(void)
     CFE_EVS_BitMaskCmd_t           bitmaskcmd;
     UT_SoftwareBusSnapshot_Entry_t LocalSnapshotData = {.MsgId = CFE_SB_MSGID_WRAP_VALUE(CFE_EVS_LONG_EVENT_MSG_MID)};
 
+    memset(&bitmaskcmd, 0, sizeof(bitmaskcmd));
+
     UtPrintf("Begin Test Ports");
 
     CFE_EVS_Global.EVS_TlmPkt.Payload.MessageFormatMode = CFE_EVS_MsgFormat_LONG;
@@ -853,11 +855,11 @@ void Test_Logging(void)
     char   tmpString[100];
     union
     {
-        CFE_EVS_NoArgsCmd_t           cmd;
+        CFE_MSG_CommandHeader_t       cmd;
         CFE_EVS_SetLogModeCmd_t       modecmd;
         CFE_EVS_WriteLogDataFileCmd_t logfilecmd;
     } CmdBuf;
-    cpuaddr             TempAddr;
+    cpuaddr             TempAddr = 0;
     CFE_ES_ResetData_t *CFE_EVS_ResetDataPtr;
 
     UtPrintf("Begin Test Logging");
@@ -1003,7 +1005,7 @@ void Test_WriteApp(void)
 {
     union
     {
-        CFE_EVS_NoArgsCmd_t           cmd;
+        CFE_MSG_CommandHeader_t       cmd;
         CFE_EVS_WriteAppDataFileCmd_t AppDataCmd;
         CFE_EVS_AppNameBitMaskCmd_t   appbitcmd;
     } CmdBuf;
@@ -1360,6 +1362,8 @@ void Test_EventCmd(void)
     CFE_EVS_AppNameCmd_t           appnamecmd;
     UT_SoftwareBusSnapshot_Entry_t LocalSnapshotData = {.MsgId = CFE_SB_MSGID_WRAP_VALUE(CFE_EVS_LONG_EVENT_MSG_MID)};
 
+    memset(&bitmaskcmd, 0, sizeof(bitmaskcmd));
+
     UtPrintf("Begin Test Event Command");
 
     CFE_EVS_Global.EVS_TlmPkt.Payload.MessageFormatMode = CFE_EVS_MsgFormat_LONG;
@@ -1683,7 +1687,9 @@ void Test_FilterCmd(void)
 */
 void Test_InvalidCmd(void)
 {
-    CFE_EVS_NoArgsCmd_t cmd;
+    CFE_MSG_CommandHeader_t cmd;
+
+    memset(&cmd, 0, sizeof(cmd));
 
     UtPrintf("Begin Test Invalid Command");
 
@@ -1816,7 +1822,7 @@ void Test_Misc(void)
     union
     {
         CFE_MSG_Message_t             msg;
-        CFE_EVS_NoArgsCmd_t           cmd;
+        CFE_MSG_CommandHeader_t       cmd;
         CFE_EVS_SetLogModeCmd_t       modecmd;
         CFE_EVS_WriteLogDataFileCmd_t writelogdatacmd;
     } PktBuf;

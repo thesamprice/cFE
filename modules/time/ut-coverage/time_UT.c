@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File:
@@ -302,13 +300,12 @@ void Test_Init(void)
 
     UtAssert_INT32_EQ(CFE_TIME_TaskInit(), ExpRtn);
 
-    /* Test response to failure of the fake tone signal commands
+    /* Test response to failure of the 1Hz signal commands
      * subscription
      */
     UT_InitData();
     ExpRtn = 0;
 
-#if (CFE_MISSION_TIME_CFG_FAKE_TONE == true)
 #if (CFE_PLATFORM_TIME_CFG_CLIENT == true)
     SubErrCnt++;
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), SubErrCnt, -SubErrCnt);
@@ -322,9 +319,6 @@ void Test_Init(void)
 #endif
 
     UtAssert_INT32_EQ(CFE_TIME_TaskInit(), ExpRtn);
-#else
-    UtAssert_NA("*Not tested* Fake tone signal commands subscription failure");
-#endif
 
     /* Test response to failure of the time at tone signal commands
      * subscription
@@ -836,10 +830,12 @@ void Test_Print(void)
     CFE_TIME_SysTime_t time;
     bool               usingDefaultEpoch = true;
 
+    memset(&time, 0, sizeof(time));
+
     UtPrintf("Begin Test Print");
 
     if (CFE_MISSION_TIME_EPOCH_YEAR != 1980 || CFE_MISSION_TIME_EPOCH_DAY != 1 || CFE_MISSION_TIME_EPOCH_HOUR != 0 ||
-        CFE_MISSION_TIME_EPOCH_MINUTE != 0 || CFE_MISSION_TIME_EPOCH_SECOND != 0)
+        CFE_MISSION_TIME_EPOCH_MINUTE != 0 || CFE_MISSION_TIME_EPOCH_SECOND != 0 || CFE_MISSION_TIME_EPOCH_MICROS != 0)
     {
         UtPrintf("Custom epoch time requires manual inspection for CFE_TIME_Print");
         usingDefaultEpoch = false;
@@ -851,9 +847,6 @@ void Test_Print(void)
     CFE_UtAssert_SYSLOG(TIME_SYSLOG_MSGS[6]);
 
     /* Test with zero time value */
-    time.Subseconds = 0;
-    time.Seconds    = 0;
-
     CFE_TIME_Print(timeBuf, time);
     if (usingDefaultEpoch)
     {
@@ -1212,11 +1205,11 @@ void Test_External(void)
      * state not set
      */
     UT_InitData();
-    CFE_TIME_Global.ClockSource   = CFE_TIME_SourceSelect_EXTERNAL;
-    CFE_TIME_Global.ClockSetState = CFE_TIME_SetState_NOT_SET;
-    CFE_TIME_Global.ExternalCount = 0;
-    settime.Seconds               = 0;
-    settime.Subseconds            = 0;
+    CFE_TIME_Global.ClockSource                     = CFE_TIME_SourceSelect_EXTERNAL;
+    CFE_TIME_Global.ReferenceState[0].ClockSetState = CFE_TIME_SetState_NOT_SET;
+    CFE_TIME_Global.ExternalCount                   = 0;
+    settime.Seconds                                 = 0;
+    settime.Subseconds                              = 0;
     CFE_TIME_ExternalTime(settime);
     UtAssert_UINT32_EQ(CFE_TIME_Global.ExternalCount, 1);
 
@@ -1224,23 +1217,23 @@ void Test_External(void)
      * state set and time less than the minimum
      */
     UT_InitData();
-    CFE_TIME_Global.ClockSource              = CFE_TIME_SourceSelect_EXTERNAL;
-    CFE_TIME_Global.ClockSetState            = CFE_TIME_SetState_WAS_SET;
-    settime.Seconds                          = 0;
-    settime.Subseconds                       = 0;
-    CFE_TIME_Global.InternalCount            = 0;
-    CFE_TIME_Global.AtToneMET.Seconds        = 0;
-    CFE_TIME_Global.AtToneMET.Subseconds     = 0;
-    CFE_TIME_Global.AtToneSTCF.Seconds       = 10;
-    CFE_TIME_Global.AtToneSTCF.Subseconds    = 0;
-    CFE_TIME_Global.AtToneDelay.Seconds      = 0;
-    CFE_TIME_Global.AtToneDelay.Subseconds   = 0;
-    CFE_TIME_Global.AtToneLatch.Seconds      = 0;
-    CFE_TIME_Global.AtToneLatch.Subseconds   = 0;
-    CFE_TIME_Global.MaxDelta.Seconds         = 0;
-    CFE_TIME_Global.MaxDelta.Subseconds      = 1;
-    CFE_TIME_Global.MaxLocalClock.Seconds    = 0;
-    CFE_TIME_Global.MaxLocalClock.Subseconds = 0;
+    CFE_TIME_Global.ClockSource                              = CFE_TIME_SourceSelect_EXTERNAL;
+    CFE_TIME_Global.ReferenceState[0].ClockSetState          = CFE_TIME_SetState_WAS_SET;
+    settime.Seconds                                          = 0;
+    settime.Subseconds                                       = 0;
+    CFE_TIME_Global.InternalCount                            = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneMET.Seconds      = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneMET.Subseconds   = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneSTCF.Seconds     = 10;
+    CFE_TIME_Global.ReferenceState[0].AtToneSTCF.Subseconds  = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneDelay.Seconds    = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneDelay.Subseconds = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneLatch.Seconds    = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneLatch.Subseconds = 0;
+    CFE_TIME_Global.MaxDelta.Seconds                         = 0;
+    CFE_TIME_Global.MaxDelta.Subseconds                      = 1;
+    CFE_TIME_Global.MaxLocalClock.Seconds                    = 0;
+    CFE_TIME_Global.MaxLocalClock.Subseconds                 = 0;
     UT_SetBSP_Time(0, 0);
     CFE_TIME_ExternalTime(settime);
     UtAssert_INT32_EQ(CFE_TIME_Global.InternalCount, 1);
@@ -1249,46 +1242,46 @@ void Test_External(void)
      * state set and time greater than the maximum
      */
     UT_InitData();
-    CFE_TIME_Global.ClockSource              = CFE_TIME_SourceSelect_EXTERNAL;
-    CFE_TIME_Global.ClockSetState            = CFE_TIME_SetState_WAS_SET;
-    settime.Seconds                          = 20;
-    settime.Subseconds                       = 0;
-    CFE_TIME_Global.InternalCount            = 0;
-    CFE_TIME_Global.AtToneMET.Seconds        = 0;
-    CFE_TIME_Global.AtToneMET.Subseconds     = 0;
-    CFE_TIME_Global.AtToneSTCF.Seconds       = 10;
-    CFE_TIME_Global.AtToneSTCF.Subseconds    = 0;
-    CFE_TIME_Global.AtToneDelay.Seconds      = 0;
-    CFE_TIME_Global.AtToneDelay.Subseconds   = 0;
-    CFE_TIME_Global.AtToneLatch.Seconds      = 0;
-    CFE_TIME_Global.AtToneLatch.Subseconds   = 0;
-    CFE_TIME_Global.MaxDelta.Seconds         = 0;
-    CFE_TIME_Global.MaxDelta.Subseconds      = 1;
-    CFE_TIME_Global.MaxLocalClock.Seconds    = 0;
-    CFE_TIME_Global.MaxLocalClock.Subseconds = 0;
+    CFE_TIME_Global.ClockSource                              = CFE_TIME_SourceSelect_EXTERNAL;
+    CFE_TIME_Global.ReferenceState[0].ClockSetState          = CFE_TIME_SetState_WAS_SET;
+    settime.Seconds                                          = 20;
+    settime.Subseconds                                       = 0;
+    CFE_TIME_Global.InternalCount                            = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneMET.Seconds      = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneMET.Subseconds   = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneSTCF.Seconds     = 10;
+    CFE_TIME_Global.ReferenceState[0].AtToneSTCF.Subseconds  = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneDelay.Seconds    = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneDelay.Subseconds = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneLatch.Seconds    = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneLatch.Subseconds = 0;
+    CFE_TIME_Global.MaxDelta.Seconds                         = 0;
+    CFE_TIME_Global.MaxDelta.Subseconds                      = 1;
+    CFE_TIME_Global.MaxLocalClock.Seconds                    = 0;
+    CFE_TIME_Global.MaxLocalClock.Subseconds                 = 0;
     UT_SetBSP_Time(0, 0);
     CFE_TIME_ExternalTime(settime);
     UtAssert_UINT32_EQ(CFE_TIME_Global.InternalCount, 1);
 
     /* Test setting time data from Time (external source, state set) */
     UT_InitData();
-    CFE_TIME_Global.ClockSource              = CFE_TIME_SourceSelect_EXTERNAL;
-    CFE_TIME_Global.ClockSetState            = CFE_TIME_SetState_WAS_SET;
-    settime.Seconds                          = 10;
-    settime.Subseconds                       = 0;
-    CFE_TIME_Global.ExternalCount            = 0;
-    CFE_TIME_Global.AtToneMET.Seconds        = 0;
-    CFE_TIME_Global.AtToneMET.Subseconds     = 0;
-    CFE_TIME_Global.AtToneSTCF.Seconds       = 10;
-    CFE_TIME_Global.AtToneSTCF.Subseconds    = 0;
-    CFE_TIME_Global.AtToneDelay.Seconds      = 0;
-    CFE_TIME_Global.AtToneDelay.Subseconds   = 0;
-    CFE_TIME_Global.AtToneLatch.Seconds      = 0;
-    CFE_TIME_Global.AtToneLatch.Subseconds   = 0;
-    CFE_TIME_Global.MaxDelta.Seconds         = 0;
-    CFE_TIME_Global.MaxDelta.Subseconds      = 1;
-    CFE_TIME_Global.MaxLocalClock.Seconds    = 0;
-    CFE_TIME_Global.MaxLocalClock.Subseconds = 0;
+    CFE_TIME_Global.ClockSource                              = CFE_TIME_SourceSelect_EXTERNAL;
+    CFE_TIME_Global.ReferenceState[0].ClockSetState          = CFE_TIME_SetState_WAS_SET;
+    settime.Seconds                                          = 10;
+    settime.Subseconds                                       = 0;
+    CFE_TIME_Global.ExternalCount                            = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneMET.Seconds      = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneMET.Subseconds   = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneSTCF.Seconds     = 10;
+    CFE_TIME_Global.ReferenceState[0].AtToneSTCF.Subseconds  = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneDelay.Seconds    = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneDelay.Subseconds = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneLatch.Seconds    = 0;
+    CFE_TIME_Global.ReferenceState[0].AtToneLatch.Subseconds = 0;
+    CFE_TIME_Global.MaxDelta.Seconds                         = 0;
+    CFE_TIME_Global.MaxDelta.Subseconds                      = 1;
+    CFE_TIME_Global.MaxLocalClock.Seconds                    = 0;
+    CFE_TIME_Global.MaxLocalClock.Subseconds                 = 0;
     UT_SetBSP_Time(0, 0);
     CFE_TIME_ExternalTime(settime);
     UtAssert_UINT32_EQ(CFE_TIME_Global.ExternalCount, 1);
@@ -1413,9 +1406,29 @@ void Test_PipeCmds(void)
 
     /* Test sending the reset counters command */
     UT_InitData();
+    CFE_TIME_Global.ToneMatchCounter      = 1;
+    CFE_TIME_Global.ToneMatchErrorCounter = 1;
+    CFE_TIME_Global.ToneSignalCounter     = 1;
+    CFE_TIME_Global.ToneDataCounter       = 1;
+    CFE_TIME_Global.ToneIntCounter        = 1;
+    CFE_TIME_Global.ToneIntErrorCounter   = 1;
+    CFE_TIME_Global.ToneTaskCounter       = 1;
+    CFE_TIME_Global.LocalIntCounter       = 1;
+    CFE_TIME_Global.LocalTaskCounter      = 1;
     memset(&CmdBuf, 0, sizeof(CmdBuf));
     UT_CallTaskPipe(CFE_TIME_TaskPipe, &CmdBuf.message, sizeof(CmdBuf.cmd), UT_TPID_CFE_TIME_CMD_RESET_COUNTERS_CC);
     CFE_UtAssert_EVENTSENT(CFE_TIME_RESET_EID);
+
+    /* Confirm error counters get reset to help cover requirements that are difficult operationally */
+    UtAssert_ZERO(CFE_TIME_Global.ToneMatchCounter);
+    UtAssert_ZERO(CFE_TIME_Global.ToneMatchErrorCounter);
+    UtAssert_ZERO(CFE_TIME_Global.ToneSignalCounter);
+    UtAssert_ZERO(CFE_TIME_Global.ToneDataCounter);
+    UtAssert_ZERO(CFE_TIME_Global.ToneIntCounter);
+    UtAssert_ZERO(CFE_TIME_Global.ToneIntErrorCounter);
+    UtAssert_ZERO(CFE_TIME_Global.ToneTaskCounter);
+    UtAssert_ZERO(CFE_TIME_Global.LocalIntCounter);
+    UtAssert_ZERO(CFE_TIME_Global.LocalTaskCounter);
 
     /* Reset counters with bad size */
     UT_InitData();
@@ -1921,6 +1934,8 @@ void Test_PipeCmds(void)
 void Test_ResetArea(void)
 {
     CFE_TIME_Reference_t Reference;
+
+    memset(&Reference, 0, sizeof(Reference));
 
     UtPrintf("Begin Test Reset Area");
 

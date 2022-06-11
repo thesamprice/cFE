@@ -6,9 +6,118 @@ This repository contains NASA's Core Flight Executive (cFE), which is a framewor
 
 This is a collection of services and associated framework to be located in the `cfe` subdirectory of a cFS Mission Tree. The Core Flight System is bundled at <https://github.com/nasa/cFS>, which includes build and execution instructions.
 
-The detailed cFE user's guide can be viewed at <https://github.com/nasa/cFS/blob/gh-pages/cFE_Users_Guide.pdf>.
+The detailed cFE user's guide can be viewed at <https://github.com/nasa/cFE/blob/gh-pages/cfe-usersguide.pdf>.
 
-## Version History
+## Changelog
+
+### Development Build: v7.0.0-rc4+dev136
+
+- Resolve UT uninit var static analysis warnings
+- Resolve fsw uninit var static analysis warnings
+- Resolve UT non-distinct identifier warnings
+- Resolve UT buffer underflow warning
+- Fix cFE_Users_guide url 404 error'
+- See <https://github.com/nasa/cFE/pull/2111> and <https://github.com/nasa/cFS/pull/492>
+
+### Development Build: v7.0.0-rc4+dev127
+
+- Update RTEMS toolchain files
+- Add support for fractional seconds in epoch
+- Add truncation warning suppression flags
+- Deploy docs from local workflow on main branch push
+- Remove redundant word in App Developers Guide    
+- UT updates for alternate time configuration
+- See <https://github.com/nasa/cFE/pull/2098> and <https://github.com/nasa/cFS/pull/471>
+
+### Development Build: v7.0.0-rc4+dev110
+
+- Only increment SB InternalErrorCounter on errors
+- Improve ES unit test coverage
+- Add config module to coverage enforcemnt    
+- Consistent doxygen flow/naming for generation and use reusable documentation generation workflow
+- Remove contributor license agreements
+- See <https://github.com/nasa/cfe/pull/2091> and <https://github.com/nasa/cFS/461>
+### Development Build: v7.0.0-rc4+dev94
+
+- Resolve build failure for time cfg 
+- Update Copyright Headers
+- Standardize version.h 
+- See <https://github.com/nasa/cfe/pull/2074> and <https://github.com/nasa/cFS/445>
+
+### Development Build: v7.0.0-rc4+dev87
+
+- Revert development version identifier to 99 for revision number
+- Use osal-common.doxygen to resolve OSAL Doxygen refs
+- Refactor doxygen mainpage into frontpage
+- See <https://github.com/nasa/cFE/pull/2066> and <https://github.com/nasa/cFS/pull/443>
+### Development Build: v7.0.0-rc4+dev80
+
+- Missing SB include for v2 msgid
+- Resolve doxygen doc warnings and enforce in CI
+- Remove explicit filename doxygen comments
+- Add CFE_ES_CreateChildTask default handler
+- See <https://github.com/nasa/cFE/pull/2061> and <https://github.com/nasa/cFS/pull/432>
+
+### Development Build: v7.0.0-rc4+dev70
+
+- Improve CFE_SB_IsValidMsgId handler
+- Update CodeQL workflow
+- Replace CFE_SB_ValueToMsgId(0) with CFE_SB_INVALID_MSG_ID
+- See <https://github.com/nasa/cFE/pull/2043> and <https://github.com/nasa/cFS/pull/414>
+
+
+### Development Build: v7.0.0-rc4+dev60
+
+- Add CFE_ES_AppInfo_t element documentation
+- Add FS Functional test
+- Fix mismatched foreach in cmake function
+- Improved code highlighting in cFE Application Developers Guide
+- CFE_FS_ParseInputFileNameEx avoid uninit var
+- Fix array length calculation for perf structs
+- Limit SBR UT loops
+- Initialize BlockData in ES UT
+- Fix `osal_id_t` type conversion in `es_UT.c`
+- See <https://github.com/nasa/cFE/pull/2019> and <https://github.com/nasa/cFS/pull/410>
+
+### Development Build: v7.0.0-rc4+dev39
+
+- Use cfe time clock state enum t in cmd/tlm and handling
+- EVS functional test add for different event types
+- Patch for recursive event loop
+- CFE_ES_MemAddOff structure to associated CFE_ES_MemAddress_t and CFE_ES_MemOffset_t
+- Avoid aliasing warnings
+- Message ID type improvements
+- CFE_SB_ValueToMsgId/MsgIdToValue wrappers
+- Use CFE_TIME_ClockState_Enum_t in cmd/tlm and handling
+- Consolidate repeated MSG stub setup in sb_UT
+- Return type conversions in CFE_ES_GetTaskName
+- Better message type pointer conversion
+- Replacing hardcoded message limit in TIME services
+- Use macro in CFE_ResourceId_IsDefined
+- Checking against IsNewOffset only
+- Set new build baseline for cFS-Caelum-rc4: v7.0.0-rc4
+- See <https://github.com/nasa/cFE/pull/2001> and <https://github.com/nasa/cFS/pull/390>
+
+### Development Build: v6.8.0-rc1+dev1030
+
+- Grammatical cleanup of requirements
+- Fix extended header definitions and update tests
+- See <https://github.com/nasa/cFE/pull/1989> and <https://github.com/nasa/cFS/pull/371>
+
+### Development Build: v6.8.0-rc1+dev1024
+
+- CFE_Assert macro names
+- Update msgid testcase to match implementation 
+- Single time domain in functional time tests
+- Add missing inclusions in CFE API headers 
+- Use existing /ram for FS header test
+- Add static local to function test so data section is nonzero
+- Make invalid buffer length consistent in es task test
+- Only check base filename in library info functional
+- Confirm sb/time reset requirements in coverage test
+- Avoid alias warning on some compilers
+- Fix broken link in Application Developers Guide
+- See <https://github.com/nasa/cFE/pull/1967> and <https://github.com/nasa/cFS/pull/359>
 
 ### Development Build: v6.8.0-rc1+dev994
 

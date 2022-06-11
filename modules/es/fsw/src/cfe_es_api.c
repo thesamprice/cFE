@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 **  File:
@@ -782,7 +780,7 @@ CFE_Status_t CFE_ES_GetLibIDByName(CFE_ES_LibId_t *LibIdPtr, const char *LibName
  *-----------------------------------------------------------------*/
 CFE_Status_t CFE_ES_GetTaskIDByName(CFE_ES_TaskId_t *TaskIdPtr, const char *TaskName)
 {
-    osal_id_t    OsalId;
+    osal_id_t    OsalId = OS_OBJECT_ID_UNDEFINED;
     int32        OsStatus;
     CFE_Status_t Result;
 
@@ -1000,9 +998,21 @@ CFE_Status_t CFE_ES_GetTaskName(char *TaskName, CFE_ES_TaskId_t TaskId, size_t B
     OsalId   = CFE_ES_TaskId_ToOSAL(TaskId);
     OsStatus = OS_GetResourceName(OsalId, TaskName, BufferLength);
 
+    if (OsStatus == OS_ERR_INVALID_ID)
+    {
+        /* Supplied ID is not a CFE task */
+        return CFE_ES_ERR_RESOURCEID_NOT_VALID;
+    }
+    if (OsStatus == OS_ERR_NAME_TOO_LONG)
+    {
+        /* Name is too long to fit in supplied buffer */
+        return CFE_ES_BAD_ARGUMENT;
+    }
     if (OsStatus != OS_SUCCESS)
     {
-        return CFE_ES_ERR_RESOURCEID_NOT_VALID;
+        /* Some other uncaught error */
+        CFE_ES_WriteToSysLog("%s(): Unexpected error from OS_GetResourceName(): %ld", __func__, (long)OsStatus);
+        return CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
     }
 
     return CFE_SUCCESS;
@@ -2179,7 +2189,7 @@ int32 CFE_ES_LibID_ToIndex(CFE_ES_LibId_t LibId, uint32 *Idx)
 CFE_Status_t CFE_ES_TaskID_ToIndex(CFE_ES_TaskId_t TaskID, uint32 *Idx)
 {
     osal_id_t    OsalID;
-    osal_index_t OsalIndex;
+    osal_index_t OsalIndex = OSAL_INDEX_C(0);
     int32        OsStatus;
 
     if (!CFE_RESOURCEID_TEST_DEFINED(TaskID))

@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: es_task_test.c
-**
-** Purpose:
-**   Functional test of ES Child Tasks APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of ES Child Tasks APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -100,8 +96,8 @@ void TestCreateChild(void)
 {
     UtPrintf("Testing: CFE_ES_CreateChildTask");
 
-    CFE_ES_TaskId_t            TaskId;
-    CFE_ES_TaskId_t            TaskId2;
+    CFE_ES_TaskId_t            TaskId        = CFE_ES_TASKID_UNDEFINED;
+    CFE_ES_TaskId_t            TaskId2       = CFE_ES_TASKID_UNDEFINED;
     const char *               TaskName      = "CHILD_TASK_1";
     CFE_ES_StackPointer_t      StackPointer  = CFE_ES_TASK_STACK_ALLOCATE;
     size_t                     StackSize     = CFE_PLATFORM_ES_PERF_CHILD_STACK_SIZE;
@@ -110,7 +106,7 @@ void TestCreateChild(void)
     int32                      ExpectedCount = 5;
     int32                      RetryCount;
     char                       TaskNameBuf[16];
-    osal_id_t                  OtherTaskId;
+    osal_id_t                  OtherTaskId = OS_OBJECT_ID_UNDEFINED;
     OS_task_prop_t             task_prop;
 
     CFE_FT_Global.Count = 0;
@@ -191,9 +187,8 @@ void TestChildTaskName(void)
 {
     UtPrintf("Testing: CFE_ES_GetTaskIDByName, CFE_ES_GetTaskName");
 
-    CFE_ES_TaskId_t            TaskId;
-    const char *               TaskName            = "CHILD_TASK_1";
-    const char                 INVALID_TASK_NAME[] = "INVALID_NAME";
+    CFE_ES_TaskId_t            TaskId     = CFE_ES_TASKID_UNDEFINED;
+    const char                 TaskName[] = "CHILD_TASK_1";
     CFE_ES_TaskId_t            TaskIdByName;
     char                       TaskNameBuf[OS_MAX_API_NAME + 4];
     CFE_ES_StackPointer_t      StackPointer = CFE_ES_TASK_STACK_ALLOCATE;
@@ -201,24 +196,27 @@ void TestChildTaskName(void)
     CFE_ES_TaskPriority_Atom_t Priority     = CFE_PLATFORM_ES_PERF_CHILD_PRIORITY;
     uint32                     Flags        = 0;
 
+    memset(TaskNameBuf, 0, sizeof(TaskNameBuf));
+
     UtAssert_INT32_EQ(CFE_ES_CreateChildTask(&TaskId, TaskName, TaskFunction, StackPointer, StackSize, Priority, Flags),
                       CFE_SUCCESS);
 
     UtAssert_INT32_EQ(CFE_ES_GetTaskIDByName(&TaskIdByName, TaskName), CFE_SUCCESS);
-    CFE_UtAssert_RESOURCEID_EQ(TaskIdByName, TaskId);
+    CFE_Assert_RESOURCEID_EQ(TaskIdByName, TaskId);
 
     UtAssert_INT32_EQ(CFE_ES_GetTaskName(TaskNameBuf, TaskId, sizeof(TaskNameBuf)), CFE_SUCCESS);
     UtAssert_StrCmp(TaskNameBuf, TaskName, "CFE_ES_GetTaskName() = %s", TaskNameBuf);
 
     UtAssert_INT32_EQ(CFE_ES_GetTaskIDByName(NULL, TaskName), CFE_ES_BAD_ARGUMENT);
     UtAssert_INT32_EQ(CFE_ES_GetTaskIDByName(&TaskIdByName, NULL), CFE_ES_BAD_ARGUMENT);
-    UtAssert_INT32_EQ(CFE_ES_GetTaskIDByName(&TaskIdByName, INVALID_TASK_NAME), CFE_ES_ERR_NAME_NOT_FOUND);
-    CFE_UtAssert_RESOURCEID_UNDEFINED(TaskIdByName);
+    UtAssert_INT32_EQ(CFE_ES_GetTaskIDByName(&TaskIdByName, "INVALID_NAME"), CFE_ES_ERR_NAME_NOT_FOUND);
+    CFE_Assert_RESOURCEID_UNDEFINED(TaskIdByName);
 
     UtAssert_INT32_EQ(CFE_ES_GetTaskName(NULL, TaskId, sizeof(TaskNameBuf)), CFE_ES_BAD_ARGUMENT);
     UtAssert_INT32_EQ(CFE_ES_GetTaskName(TaskNameBuf, CFE_ES_TASKID_UNDEFINED, sizeof(TaskNameBuf)),
                       CFE_ES_ERR_RESOURCEID_NOT_VALID);
-    UtAssert_INT32_EQ(CFE_ES_GetTaskName(TaskNameBuf, TaskId, sizeof(TaskName) - 4), CFE_ES_ERR_RESOURCEID_NOT_VALID);
+    UtAssert_INT32_EQ(CFE_ES_GetTaskName(TaskNameBuf, TaskId, 0), CFE_ES_BAD_ARGUMENT);
+    UtAssert_INT32_EQ(CFE_ES_GetTaskName(TaskNameBuf, TaskId, sizeof(TaskName) - 1), CFE_ES_BAD_ARGUMENT);
 
     UtAssert_INT32_EQ(CFE_ES_DeleteChildTask(TaskId), CFE_SUCCESS);
 }
@@ -227,7 +225,7 @@ void TestChildTaskDelete(void)
 {
     UtPrintf("Testing: CFE_ES_DeleteChildTask");
 
-    CFE_ES_TaskId_t            TaskId;
+    CFE_ES_TaskId_t            TaskId        = CFE_ES_TASKID_UNDEFINED;
     const char *               TaskName      = "CHILD_TASK_1";
     CFE_ES_StackPointer_t      StackPointer  = CFE_ES_TASK_STACK_ALLOCATE;
     size_t                     StackSize     = CFE_PLATFORM_ES_PERF_CHILD_STACK_SIZE;

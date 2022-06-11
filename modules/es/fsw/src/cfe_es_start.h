@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -89,7 +87,7 @@ extern CFE_ES_ObjectTable_t CFE_ES_ObjectTable[CFE_PLATFORM_ES_OBJECT_TABLE_SIZE
  * Purpose: This function reads the es_object_table and performs all of the
  *          application layer initialization.
  */
-extern void CFE_ES_CreateObjects(void);
+void CFE_ES_CreateObjects(void);
 
 /*
  * Name: CFE_ES_SetupResetVariables
@@ -99,7 +97,7 @@ extern void CFE_ES_CreateObjects(void);
  *          have happened.
  *
  */
-extern void CFE_ES_SetupResetVariables(uint32 StartType, uint32 StartSubtype, uint32 BootSource);
+void CFE_ES_SetupResetVariables(uint32 StartType, uint32 StartSubtype, uint32 BootSource);
 
 /*
  * Name: CFE_ES_InitializeFileSystems
@@ -107,7 +105,7 @@ extern void CFE_ES_SetupResetVariables(uint32 StartType, uint32 StartSubtype, ui
  * Purpose: This function initializes the file systems used in the cFE core.
  *
  */
-extern void CFE_ES_InitializeFileSystems(uint32 StartType);
+void CFE_ES_InitializeFileSystems(uint32 StartType);
 
 /*
  * Name: CFE_ES_SetupPerfVariables
@@ -118,6 +116,6 @@ extern void CFE_ES_InitializeFileSystems(uint32 StartType);
  * This code must be called before any other task or code that would use
  * CFE_ES_PerfLogEntry() / CFE_ES_PerfLogExit() functions
  */
-extern void CFE_ES_SetupPerfVariables(uint32 ResetType);
+void CFE_ES_SetupPerfVariables(uint32 ResetType);
 
 #endif /* CFE_ES_START_H */

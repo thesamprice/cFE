@@ -99,8 +99,14 @@ function(add_cfe_app APP_NAME APP_SRC_FILES)
 
   # Create the app module
   add_library(${APP_NAME} ${APPTYPE} ${APP_SRC_FILES} ${ARGN})
-  target_link_libraries(${APP_NAME} core_api)
+  #TODO 
+  if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    target_link_libraries(${APP_NAME} core_api "-undefined dynamic_lookup")
+  else()
+    target_link_libraries(${APP_NAME} core_api )
+  endif()
 
+  
   # An "install" step is only needed for dynamic/runtime loaded apps
   if (APP_DYNAMIC_TARGET_LIST)
     cfs_app_do_install(${APP_NAME} ${APP_DYNAMIC_TARGET_LIST})

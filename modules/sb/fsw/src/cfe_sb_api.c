@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /******************************************************************************
 ** File: cfe_sb_api.c
@@ -1503,24 +1501,42 @@ int32 CFE_SB_TransmitMsgValidate(const CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t
         switch (PendingEventID)
         {
             case CFE_SB_SEND_BAD_ARG_EID:
-                CFE_EVS_SendEventWithAppID(CFE_SB_SEND_BAD_ARG_EID, CFE_EVS_EventType_ERROR, CFE_SB_Global.AppId,
-                                           "Send Err:Bad input argument,Arg 0x%lx,App %s", (unsigned long)MsgPtr,
-                                           CFE_SB_GetAppTskName(TskId, FullName));
+                if (CFE_SB_RequestToSendEvent(TskId, CFE_SB_SEND_BAD_ARG_EID_BIT) == CFE_SB_GRANTED)
+                {
+                    CFE_EVS_SendEventWithAppID(CFE_SB_SEND_BAD_ARG_EID, CFE_EVS_EventType_ERROR, CFE_SB_Global.AppId,
+                                               "Send Err:Bad input argument,Arg 0x%lx,App %s", (unsigned long)MsgPtr,
+                                               CFE_SB_GetAppTskName(TskId, FullName));
+
+                    /* clear the bit so the task may send this event again */
+                    CFE_SB_FinishSendEvent(TskId, CFE_SB_SEND_BAD_ARG_EID_BIT);
+                }
                 break;
 
             case CFE_SB_SEND_INV_MSGID_EID:
-                CFE_EVS_SendEventWithAppID(CFE_SB_SEND_INV_MSGID_EID, CFE_EVS_EventType_ERROR, CFE_SB_Global.AppId,
-                                           "Send Err:Invalid MsgId(0x%x)in msg,App %s",
-                                           (unsigned int)CFE_SB_MsgIdToValue(*MsgIdPtr),
-                                           CFE_SB_GetAppTskName(TskId, FullName));
+                if (CFE_SB_RequestToSendEvent(TskId, CFE_SB_SEND_INV_MSGID_EID_BIT) == CFE_SB_GRANTED)
+                {
+                    CFE_EVS_SendEventWithAppID(CFE_SB_SEND_INV_MSGID_EID, CFE_EVS_EventType_ERROR, CFE_SB_Global.AppId,
+                                               "Send Err:Invalid MsgId(0x%x)in msg,App %s",
+                                               (unsigned int)CFE_SB_MsgIdToValue(*MsgIdPtr),
+                                               CFE_SB_GetAppTskName(TskId, FullName));
+
+                    /* clear the bit so the task may send this event again */
+                    CFE_SB_FinishSendEvent(TskId, CFE_SB_SEND_INV_MSGID_EID_BIT);
+                }
                 break;
 
             case CFE_SB_MSG_TOO_BIG_EID:
-                CFE_EVS_SendEventWithAppID(CFE_SB_MSG_TOO_BIG_EID, CFE_EVS_EventType_ERROR, CFE_SB_Global.AppId,
-                                           "Send Err:Msg Too Big MsgId=0x%x,app=%s,size=%d,MaxSz=%d",
-                                           (unsigned int)CFE_SB_MsgIdToValue(*MsgIdPtr),
-                                           CFE_SB_GetAppTskName(TskId, FullName), (int)*SizePtr,
-                                           CFE_MISSION_SB_MAX_SB_MSG_SIZE);
+                if (CFE_SB_RequestToSendEvent(TskId, CFE_SB_MSG_TOO_BIG_EID_BIT) == CFE_SB_GRANTED)
+                {
+                    CFE_EVS_SendEventWithAppID(CFE_SB_MSG_TOO_BIG_EID, CFE_EVS_EventType_ERROR, CFE_SB_Global.AppId,
+                                               "Send Err:Msg Too Big MsgId=0x%x,app=%s,size=%d,MaxSz=%d",
+                                               (unsigned int)CFE_SB_MsgIdToValue(*MsgIdPtr),
+                                               CFE_SB_GetAppTskName(TskId, FullName), (int)*SizePtr,
+                                               CFE_MISSION_SB_MAX_SB_MSG_SIZE);
+
+                    /* clear the bit so the task may send this event again */
+                    CFE_SB_FinishSendEvent(TskId, CFE_SB_MSG_TOO_BIG_EID_BIT);
+                }
                 break;
 
             case CFE_SB_SEND_NO_SUBS_EID:
@@ -1972,8 +1988,8 @@ CFE_Status_t CFE_SB_ReceiveBuffer(CFE_SB_Buffer_t **BufPtr, CFE_SB_PipeId_t Pipe
         CFE_SB_DecrBufUseCnt(BufDscPtr);
     }
 
-    /* Before unlocking, check the PendingEventID and increment relevant error counter */
-    if (Status != CFE_SUCCESS)
+    /* Before unlocking, increment relevant error counter if needed */
+    if (Status != CFE_SUCCESS && Status != CFE_SB_NO_MESSAGE && Status != CFE_SB_TIME_OUT)
     {
         if (PendingEventID == CFE_SB_RCV_BAD_ARG_EID || PendingEventID == CFE_SB_BAD_PIPEID_EID)
         {

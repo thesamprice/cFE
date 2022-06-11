@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: resource_id_misc_test.c
-**
-** Purpose:
-**   Functional test of Miscellaneous Resource Id APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of Miscellaneous Resource Id APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -60,10 +56,10 @@ void TestToFromInteger(void)
     /* Test resource ID -> integer -> resource ID */
     Id1 = CFE_ResourceId_ToInteger(ResourceId1);
     Id2 = CFE_ResourceId_ToInteger(ResourceId2);
-    CFE_UtAssert_RESOURCEID_EQ((CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(CFE_ResourceId_FromInteger(Id1)),
-                               (CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(ResourceId1));
-    CFE_UtAssert_RESOURCEID_EQ((CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(CFE_ResourceId_FromInteger(Id2)),
-                               (CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(ResourceId2));
+    CFE_Assert_RESOURCEID_EQ((CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(CFE_ResourceId_FromInteger(Id1)),
+                             (CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(ResourceId1));
+    CFE_Assert_RESOURCEID_EQ((CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(CFE_ResourceId_FromInteger(Id2)),
+                             (CFE_RESOURCEID_BASE_TYPE)CFE_RESOURCEID_WRAP(ResourceId2));
 }
 
 void TestIsDefined(void)
@@ -115,6 +111,13 @@ void TestGetBaseSerial(void)
         CFE_ResourceId_t   ResourceID;
     } CDSHandleIdBuf;
 
+    memset(&AppIdBuf, 0, sizeof(AppIdBuf));
+    memset(&LibIdBuf, 0, sizeof(LibIdBuf));
+    memset(&TaskIdBuf, 0, sizeof(TaskIdBuf));
+    memset(&CounterIdBuf, 0, sizeof(CounterIdBuf));
+    memset(&PoolIdBuf, 0, sizeof(PoolIdBuf));
+    memset(&CDSHandleIdBuf, 0, sizeof(CDSHandleIdBuf));
+
     /* Referenced from cfe_core_resourceid_basevalues.h */
     int TASKID_BASE     = CFE_RESOURCEID_MAKE_BASE(OS_OBJECT_TYPE_OS_TASK);
     int APPID_BASE      = CFE_RESOURCEID_MAKE_BASE(OS_OBJECT_TYPE_USER + 1);
@@ -151,7 +154,7 @@ void TestGetBaseSerial(void)
                       CFE_RESOURCEID_UNWRAP(PoolIdBuf.ResourceID) - POOLID_BASE);
     UtAssert_INT32_EQ(CFE_ES_PoolDelete(PoolIdBuf.PoolId), CFE_SUCCESS);
     /* CDS Block Id */
-    CFE_UtAssert_STATUS_OK(CFE_ES_RegisterCDS(&CDSHandleIdBuf.CDSHandleId, CDSBlockSize, CDSName));
+    CFE_Assert_STATUS_OK(CFE_ES_RegisterCDS(&CDSHandleIdBuf.CDSHandleId, CDSBlockSize, CDSName));
     UtAssert_INT32_EQ(CFE_ResourceId_GetBase(CDSHandleIdBuf.ResourceID), CDSBLOCKID_BASE);
     UtAssert_INT32_EQ(CFE_ResourceId_GetSerial(CDSHandleIdBuf.ResourceID),
                       CFE_RESOURCEID_UNWRAP(CDSHandleIdBuf.ResourceID) - CDSBLOCKID_BASE);
@@ -179,13 +182,13 @@ void TestFindNext(void)
     /*
      * Why does this macro not accept a resource ID
      * The following line won't compile
-     * CFE_UtAssert_RESOURCEID_UNDEFINED(AppIdBuf.ResourceId);
+     * CFE_Assert_RESOURCEID_UNDEFINED(AppIdBuf.ResourceId);
      */
-    CFE_UtAssert_RESOURCEID_UNDEFINED(AppIdBuf.AppId);
+    CFE_Assert_RESOURCEID_UNDEFINED(AppIdBuf.AppId);
 
     /* maximum number of applications is 0 */
     AppIdBuf.ResourceID = CFE_ResourceId_FindNext(AppIdBuf.ResourceID, 0, TestReturnFalse);
-    CFE_UtAssert_RESOURCEID_UNDEFINED(AppIdBuf.AppId);
+    CFE_Assert_RESOURCEID_UNDEFINED(AppIdBuf.AppId);
 }
 
 void TestToIndex(void)

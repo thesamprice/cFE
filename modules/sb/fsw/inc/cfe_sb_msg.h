@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -504,8 +502,8 @@ typedef struct CFE_SB_WriteFileInfoCmd_Payload
  */
 typedef struct CFE_SB_WriteFileInfoCmd
 {
-    CFE_MSG_CommandHeader_t           Hdr;     /**< \brief Command header */
-    CFE_SB_WriteFileInfoCmd_Payload_t Payload; /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    CFE_SB_WriteFileInfoCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_SB_WriteFileInfoCmd_t;
 
 /*
@@ -536,8 +534,8 @@ typedef struct CFE_SB_RouteCmd_Payload
  */
 typedef struct CFE_SB_RouteCmd
 {
-    CFE_MSG_CommandHeader_t   Hdr;     /**< \brief Command header */
-    CFE_SB_RouteCmd_Payload_t Payload; /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t   CommandHeader; /**< \brief Command header */
+    CFE_SB_RouteCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_SB_RouteCmd_t;
 
 /*
@@ -599,8 +597,8 @@ typedef struct CFE_SB_HousekeepingTlm_Payload
 
 typedef struct CFE_SB_HousekeepingTlm
 {
-    CFE_MSG_TelemetryHeader_t        Hdr;     /**< \brief Telemetry header */
-    CFE_SB_HousekeepingTlm_Payload_t Payload; /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t        TelemetryHeader; /**< \brief Telemetry header */
+    CFE_SB_HousekeepingTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_SB_HousekeepingTlm_t;
 
 /**
@@ -705,8 +703,8 @@ typedef struct CFE_SB_StatsTlm_Payload
 
 typedef struct CFE_SB_StatsTlm
 {
-    CFE_MSG_TelemetryHeader_t Hdr;     /**< \brief Telemetry header */
-    CFE_SB_StatsTlm_Payload_t Payload; /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t TelemetryHeader; /**< \brief Telemetry header */
+    CFE_SB_StatsTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_SB_StatsTlm_t;
 
 /**
@@ -757,8 +755,8 @@ typedef struct CFE_SB_SingleSubscriptionTlm_Payload
 
 typedef struct CFE_SB_SingleSubscriptionTlm
 {
-    CFE_MSG_TelemetryHeader_t              Hdr;     /**< \brief Telemetry header */
-    CFE_SB_SingleSubscriptionTlm_Payload_t Payload; /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t              TelemetryHeader; /**< \brief Telemetry header */
+    CFE_SB_SingleSubscriptionTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_SB_SingleSubscriptionTlm_t;
 
 /**
@@ -798,8 +796,8 @@ typedef struct CFE_SB_AllSubscriptionsTlm_Payload
 
 typedef struct CFE_SB_AllSubscriptionsTlm
 {
-    CFE_MSG_TelemetryHeader_t            Hdr;     /**< \brief Telemetry header */
-    CFE_SB_AllSubscriptionsTlm_Payload_t Payload; /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t            TelemetryHeader; /**< \brief Telemetry header */
+    CFE_SB_AllSubscriptionsTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_SB_AllSubscriptionsTlm_t;
 
 #endif /* CFE_SB_MSG_H */

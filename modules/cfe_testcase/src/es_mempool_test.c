@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: es_mempool_test.c
-**
-** Purpose:
-**   Functional test of basic ES Mempool APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of basic ES Mempool APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -42,7 +38,7 @@ static CFE_FT_PoolMemBlock_t CFE_FT_PoolMemBlock[CFE_PLATFORM_ES_MAX_MEMORY_POOL
 
 void TestMemPoolCreate(void)
 {
-    CFE_ES_MemHandle_t PoolID;
+    CFE_ES_MemHandle_t PoolID = CFE_ES_MEMHANDLE_UNDEFINED;
 
     UtPrintf("Testing: CFE_ES_PoolCreateNoSem, CFE_ES_PoolCreate, CFE_ES_PoolCreateEx");
 
@@ -106,7 +102,7 @@ void TestMemPoolCreateMax(void)
 
 void TestMemPoolGetBuf(void)
 {
-    CFE_ES_MemHandle_t  PoolID;
+    CFE_ES_MemHandle_t  PoolID = CFE_ES_MEMHANDLE_UNDEFINED;
     int8                Pool[1024];
     size_t              BufferSize = 512;
     size_t              BufferBig  = 2048;
@@ -131,7 +127,7 @@ void TestMemPoolGetBuf(void)
 
 void TestMemPoolBufInfo(void)
 {
-    CFE_ES_MemHandle_t  PoolID;
+    CFE_ES_MemHandle_t  PoolID = CFE_ES_MEMHANDLE_UNDEFINED;
     int8                Pool[1024];
     size_t              Buffer   = 512;
     CFE_ES_MemPoolBuf_t addressp = CFE_ES_MEMPOOLBUF_C(0);
@@ -156,7 +152,7 @@ void TestMemPoolBufInfo(void)
 
 void TestMemPoolPutBuf(void)
 {
-    CFE_ES_MemHandle_t  PoolID;
+    CFE_ES_MemHandle_t  PoolID = CFE_ES_MEMHANDLE_UNDEFINED;
     int8                Pool[1024];
     size_t              Buffer   = 512;
     CFE_ES_MemPoolBuf_t addressp = CFE_ES_MEMPOOLBUF_C(0);
@@ -178,9 +174,11 @@ void TestMemPoolPutBuf(void)
 
 void TestMemPoolDelete(void)
 {
-    CFE_ES_MemHandle_t    PoolID; /* Poo1 1 handle, no mutex */
+    CFE_ES_MemHandle_t    PoolID = CFE_ES_MEMHANDLE_UNDEFINED; /* Poo1 1 handle, no mutex */
     uint8                 Buffer[1024];
     CFE_ES_MemPoolStats_t Stats;
+
+    memset(&Stats, 0, sizeof(Stats));
 
     UtPrintf("Testing: CFE_ES_PoolDelete, CFE_ES_GetMemPoolStats, CFE_ES_PoolCreateEx");
 

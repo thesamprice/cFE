@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -491,7 +489,7 @@
 */
 typedef struct CFE_TBL_NoArgsCmd
 {
-    CFE_MSG_CommandHeader_t CmdHeader; /**< \brief Command header */
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
 } CFE_TBL_NoArgsCmd_t;
 
 /*
@@ -518,8 +516,8 @@ typedef struct CFE_TBL_LoadCmd_Payload
  */
 typedef struct CFE_TBL_LoadCmd
 {
-    CFE_MSG_CommandHeader_t   CmdHeader; /**< \brief Command header */
-    CFE_TBL_LoadCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t   CommandHeader; /**< \brief Command header */
+    CFE_TBL_LoadCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_LoadCmd_t;
 
 /**
@@ -548,8 +546,8 @@ typedef struct CFE_TBL_DumpCmd_Payload
  */
 typedef struct CFE_TBL_DumpCmd
 {
-    CFE_MSG_CommandHeader_t   CmdHeader; /**< \brief Command header */
-    CFE_TBL_DumpCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t   CommandHeader; /**< \brief Command header */
+    CFE_TBL_DumpCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_DumpCmd_t;
 
 /**
@@ -575,8 +573,8 @@ typedef struct CFE_TBL_ValidateCmd_Payload
  */
 typedef struct CFE_TBL_ValidateCmd
 {
-    CFE_MSG_CommandHeader_t       CmdHeader; /**< \brief Command header */
-    CFE_TBL_ValidateCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t       CommandHeader; /**< \brief Command header */
+    CFE_TBL_ValidateCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_ValidateCmd_t;
 
 /**
@@ -596,8 +594,8 @@ typedef struct CFE_TBL_ActivateCmd_Payload
  */
 typedef struct CFE_TBL_ActivateCmd
 {
-    CFE_MSG_CommandHeader_t       CmdHeader; /**< \brief Command header */
-    CFE_TBL_ActivateCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t       CommandHeader; /**< \brief Command header */
+    CFE_TBL_ActivateCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_ActivateCmd_t;
 
 /**
@@ -618,8 +616,8 @@ typedef struct CFE_TBL_DumpRegistryCmd_Payload
  */
 typedef struct CFE_TBL_DumpRegistryCmd
 {
-    CFE_MSG_CommandHeader_t           CmdHeader; /**< \brief Command header */
-    CFE_TBL_DumpRegistryCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    CFE_TBL_DumpRegistryCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_DumpRegistryCmd_t;
 
 /**
@@ -641,8 +639,8 @@ typedef struct CFE_TBL_SendRegistryCmd_Payload
  */
 typedef struct CFE_TBL_SendRegistryCmd
 {
-    CFE_MSG_CommandHeader_t           CmdHeader; /**< \brief Command header */
-    CFE_TBL_SendRegistryCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    CFE_TBL_SendRegistryCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_SendRegistryCmd_t;
 
 /**
@@ -664,8 +662,8 @@ typedef struct CFE_TBL_DelCDSCmd_Payload
  */
 typedef struct CFE_TBL_DeleteCDSCmd
 {
-    CFE_MSG_CommandHeader_t     CmdHeader; /**< \brief Command header */
-    CFE_TBL_DelCDSCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t     CommandHeader; /**< \brief Command header */
+    CFE_TBL_DelCDSCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_DeleteCDSCmd_t;
 
 /**
@@ -685,8 +683,8 @@ typedef struct CFE_TBL_AbortLoadCmd_Payload
  */
 typedef struct CFE_TBL_AbortLoadCmd
 {
-    CFE_MSG_CommandHeader_t        CmdHeader; /**< \brief Command header */
-    CFE_TBL_AbortLoadCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t        CommandHeader; /**< \brief Command header */
+    CFE_TBL_AbortLoadCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_AbortLoadCmd_t;
 
 /*************************************************************************/
@@ -712,8 +710,8 @@ typedef struct CFE_TBL_NotifyCmd_Payload
  */
 typedef struct CFE_TBL_NotifyCmd
 {
-    CFE_MSG_CommandHeader_t     CmdHeader; /**< \brief Command header */
-    CFE_TBL_NotifyCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t     CommandHeader; /**< \brief Command header */
+    CFE_TBL_NotifyCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_TBL_NotifyCmd_t;
 
 /*************************************************************************/
@@ -784,8 +782,8 @@ typedef struct CFE_TBL_HousekeepingTlm_Payload
 
 typedef struct CFE_TBL_HousekeepingTlm
 {
-    CFE_MSG_TelemetryHeader_t         TlmHeader; /**< \brief Telemetry header */
-    CFE_TBL_HousekeepingTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t         TelemetryHeader; /**< \brief Telemetry header */
+    CFE_TBL_HousekeepingTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_TBL_HousekeepingTlm_t;
 
 /**
@@ -831,8 +829,8 @@ typedef struct CFE_TBL_TblRegPacket_Payload
 
 typedef struct CFE_TBL_TableRegistryTlm
 {
-    CFE_MSG_TelemetryHeader_t      TlmHeader; /**< \brief Telemetry header */
-    CFE_TBL_TblRegPacket_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t      TelemetryHeader; /**< \brief Telemetry header */
+    CFE_TBL_TblRegPacket_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_TBL_TableRegistryTlm_t;
 
 #endif /* CFE_TBL_MSG_H */

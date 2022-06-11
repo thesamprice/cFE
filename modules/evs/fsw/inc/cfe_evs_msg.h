@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -906,7 +904,7 @@
 **/
 typedef struct CFE_EVS_NoArgsCmd
 {
-    CFE_MSG_CommandHeader_t CmdHeader; /**< \brief Command header */
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
 } CFE_EVS_NoArgsCmd_t;
 
 /*
@@ -934,8 +932,8 @@ typedef struct CFE_EVS_LogFileCmd_Payload
  */
 typedef struct CFE_EVS_WriteLogDataFileCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_EVS_LogFileCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_EVS_LogFileCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_WriteLogDataFileCmd_t;
 
 /**
@@ -954,8 +952,8 @@ typedef struct CFE_EVS_AppDataCmd_Payload
  */
 typedef struct CFE_EVS_WriteAppDataFileCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_EVS_AppDataCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_EVS_AppDataCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_WriteAppDataFileCmd_t;
 
 /**
@@ -975,8 +973,8 @@ typedef struct CFE_EVS_SetLogMode_Payload
  */
 typedef struct CFE_EVS_SetLogModeCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_EVS_SetLogMode_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_EVS_SetLogMode_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_SetLogModeCmd_t;
 
 /**
@@ -996,8 +994,8 @@ typedef struct CFE_EVS_SetEventFormatCode_Payload
  */
 typedef struct CFE_EVS_SetEventFormatModeCmd
 {
-    CFE_MSG_CommandHeader_t              CmdHeader; /**< \brief Command header */
-    CFE_EVS_SetEventFormatMode_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t              CommandHeader; /**< \brief Command header */
+    CFE_EVS_SetEventFormatMode_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_SetEventFormatModeCmd_t;
 
 /**
@@ -1018,8 +1016,8 @@ typedef struct CFE_EVS_BitMaskCmd_Payload
  */
 typedef struct CFE_EVS_BitMaskCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_EVS_BitMaskCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_EVS_BitMaskCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_BitMaskCmd_t;
 
 /*
@@ -1049,8 +1047,8 @@ typedef struct CFE_EVS_AppNameCmd_Payload
  */
 typedef struct CFE_EVS_AppNameCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_EVS_AppNameCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_EVS_AppNameCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_AppNameCmd_t;
 
 /*
@@ -1080,8 +1078,8 @@ typedef struct CFE_EVS_AppNameEventIDCmd_Payload
  */
 typedef struct CFE_EVS_AppNameEventIDCmd
 {
-    CFE_MSG_CommandHeader_t             CmdHeader; /**< \brief Command header */
-    CFE_EVS_AppNameEventIDCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t             CommandHeader; /**< \brief Command header */
+    CFE_EVS_AppNameEventIDCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_AppNameEventIDCmd_t;
 
 /*
@@ -1110,8 +1108,8 @@ typedef struct CFE_EVS_AppNameBitMaskCmd_Payload
  */
 typedef struct CFE_EVS_AppNameBitMaskCmd
 {
-    CFE_MSG_CommandHeader_t             CmdHeader; /**< \brief Command header */
-    CFE_EVS_AppNameBitMaskCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t             CommandHeader; /**< \brief Command header */
+    CFE_EVS_AppNameBitMaskCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_AppNameBitMaskCmd_t;
 
 /*
@@ -1141,8 +1139,8 @@ typedef struct CFE_EVS_AppNameEventIDMaskCmd_Payload
  */
 typedef struct CFE_EVS_AppNameEventIDMaskCmd
 {
-    CFE_MSG_CommandHeader_t                 CmdHeader; /**< \brief Command header */
-    CFE_EVS_AppNameEventIDMaskCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t                 CommandHeader; /**< \brief Command header */
+    CFE_EVS_AppNameEventIDMaskCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_EVS_AppNameEventIDMaskCmd_t;
 
 /*
@@ -1214,8 +1212,8 @@ typedef struct CFE_EVS_HousekeepingTlm_Payload
 
 typedef struct CFE_EVS_HousekeepingTlm
 {
-    CFE_MSG_TelemetryHeader_t         TlmHeader; /**< \brief Telemetry header */
-    CFE_EVS_HousekeepingTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t         TelemetryHeader; /**< \brief Telemetry header */
+    CFE_EVS_HousekeepingTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_EVS_HousekeepingTlm_t;
 
 /** Telemetry packet structures */
@@ -1260,15 +1258,15 @@ typedef struct CFE_EVS_ShortEventTlm_Payload
 
 typedef struct CFE_EVS_LongEventTlm
 {
-    CFE_MSG_TelemetryHeader_t      TlmHeader; /**< \brief Telemetry header */
-    CFE_EVS_LongEventTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t      TelemetryHeader; /**< \brief Telemetry header */
+    CFE_EVS_LongEventTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 
 } CFE_EVS_LongEventTlm_t;
 
 typedef struct CFE_EVS_ShortEventTlm
 {
-    CFE_MSG_TelemetryHeader_t       TlmHeader; /**< \brief Telemetry header */
-    CFE_EVS_ShortEventTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t       TelemetryHeader; /**< \brief Telemetry header */
+    CFE_EVS_ShortEventTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 
 } CFE_EVS_ShortEventTlm_t;
 

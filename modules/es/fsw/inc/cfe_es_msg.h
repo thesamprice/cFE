@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -1060,7 +1058,7 @@
 */
 typedef struct CFE_ES_NoArgsCmd
 {
-    CFE_MSG_CommandHeader_t CmdHeader; /**< \brief Command header */
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
 } CFE_ES_NoArgsCmd_t;
 
 /*
@@ -1093,8 +1091,8 @@ typedef struct CFE_ES_RestartCmd_Payload
  */
 typedef struct CFE_ES_RestartCmd
 {
-    CFE_MSG_CommandHeader_t     CmdHeader; /**< \brief Command header */
-    CFE_ES_RestartCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t     CommandHeader; /**< \brief Command header */
+    CFE_ES_RestartCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_RestartCmd_t;
 
 /**
@@ -1116,8 +1114,8 @@ typedef struct CFE_ES_FileNameCmd_Payload
  */
 typedef struct CFE_ES_FileNameCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_ES_FileNameCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_ES_FileNameCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_FileNameCmd_t;
 
 /*
@@ -1147,8 +1145,8 @@ typedef struct CFE_ES_OverWriteSysLogCmd_Payload
  */
 typedef struct CFE_ES_OverWriteSysLogCmd
 {
-    CFE_MSG_CommandHeader_t             CmdHeader; /**< \brief Command header */
-    CFE_ES_OverWriteSysLogCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t             CommandHeader; /**< \brief Command header */
+    CFE_ES_OverWriteSysLogCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_OverWriteSysLogCmd_t;
 
 /**
@@ -1179,8 +1177,8 @@ typedef struct CFE_ES_StartAppCmd_Payload
  */
 typedef struct CFE_ES_StartApp
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_ES_StartAppCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_ES_StartAppCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_StartAppCmd_t;
 
 /**
@@ -1199,8 +1197,8 @@ typedef struct CFE_ES_AppNameCmd_Payload
  */
 typedef struct CFE_ES_AppNameCmd
 {
-    CFE_MSG_CommandHeader_t     CmdHeader; /**< \brief Command header */
-    CFE_ES_AppNameCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t     CommandHeader; /**< \brief Command header */
+    CFE_ES_AppNameCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_AppNameCmd_t;
 
 /*
@@ -1230,8 +1228,8 @@ typedef struct CFE_ES_AppReloadCmd_Payload
  */
 typedef struct CFE_ES_ReloadAppCmd
 {
-    CFE_MSG_CommandHeader_t       CmdHeader; /**< \brief Command header */
-    CFE_ES_AppReloadCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t       CommandHeader; /**< \brief Command header */
+    CFE_ES_AppReloadCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_ReloadAppCmd_t;
 
 /**
@@ -1251,8 +1249,8 @@ typedef struct CFE_ES_SetMaxPRCountCmd_Payload
  */
 typedef struct CFE_ES_SetMaxPRCountCmd
 {
-    CFE_MSG_CommandHeader_t           CmdHeader; /**< \brief Command header */
-    CFE_ES_SetMaxPRCountCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t           CommandHeader; /**< \brief Command header */
+    CFE_ES_SetMaxPRCountCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_SetMaxPRCountCmd_t;
 
 /**
@@ -1273,8 +1271,8 @@ typedef struct CFE_ES_DeleteCDSCmd_Payload
  */
 typedef struct CFE_ES_DeleteCDSCmd
 {
-    CFE_MSG_CommandHeader_t       CmdHeader; /**< \brief Command header */
-    CFE_ES_DeleteCDSCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t       CommandHeader; /**< \brief Command header */
+    CFE_ES_DeleteCDSCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_DeleteCDSCmd_t;
 
 /**
@@ -1293,8 +1291,8 @@ typedef struct CFE_ES_StartPerfCmd_Payload
  */
 typedef struct CFE_ES_StartPerfDataCmd
 {
-    CFE_MSG_CommandHeader_t       CmdHeader; /**< \brief Command header */
-    CFE_ES_StartPerfCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t       CommandHeader; /**< \brief Command header */
+    CFE_ES_StartPerfCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_StartPerfDataCmd_t;
 
 /**
@@ -1314,8 +1312,8 @@ typedef struct CFE_ES_StopPerfCmd_Payload
  */
 typedef struct CFE_ES_StopPerfDataCmd
 {
-    CFE_MSG_CommandHeader_t      CmdHeader; /**< \brief Command header */
-    CFE_ES_StopPerfCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t      CommandHeader; /**< \brief Command header */
+    CFE_ES_StopPerfCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_StopPerfDataCmd_t;
 
 /**
@@ -1336,8 +1334,8 @@ typedef struct CFE_ES_SetPerfFilterMaskCmd_Payload
  */
 typedef struct CFE_ES_SetPerfFilterMaskCmd
 {
-    CFE_MSG_CommandHeader_t               CmdHeader; /**< \brief Command header */
-    CFE_ES_SetPerfFilterMaskCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t               CommandHeader; /**< \brief Command header */
+    CFE_ES_SetPerfFilterMaskCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_SetPerfFilterMaskCmd_t;
 
 /**
@@ -1358,8 +1356,8 @@ typedef struct CFE_ES_SetPerfTrigMaskCmd_Payload
  */
 typedef struct CFE_ES_SetPerfTriggerMaskCmd
 {
-    CFE_MSG_CommandHeader_t             CmdHeader; /**< \brief Command header */
-    CFE_ES_SetPerfTrigMaskCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t             CommandHeader; /**< \brief Command header */
+    CFE_ES_SetPerfTrigMaskCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_SetPerfTriggerMaskCmd_t;
 
 /**
@@ -1380,8 +1378,8 @@ typedef struct CFE_ES_SendMemPoolStatsCmd_Payload
  */
 typedef struct CFE_ES_SendMemPoolStatsCmd
 {
-    CFE_MSG_CommandHeader_t              CmdHeader; /**< \brief Command header */
-    CFE_ES_SendMemPoolStatsCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t              CommandHeader; /**< \brief Command header */
+    CFE_ES_SendMemPoolStatsCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_SendMemPoolStatsCmd_t;
 
 /**
@@ -1401,8 +1399,8 @@ typedef struct CFE_ES_DumpCDSRegistryCmd_Payload
  */
 typedef struct CFE_ES_DumpCDSRegistryCmd
 {
-    CFE_MSG_CommandHeader_t             CmdHeader; /**< \brief Command header */
-    CFE_ES_DumpCDSRegistryCmd_Payload_t Payload;   /**< \brief Command payload */
+    CFE_MSG_CommandHeader_t             CommandHeader; /**< \brief Command header */
+    CFE_ES_DumpCDSRegistryCmd_Payload_t Payload;       /**< \brief Command payload */
 } CFE_ES_DumpCDSRegistryCmd_t;
 
 /*************************************************************************/
@@ -1425,8 +1423,8 @@ typedef struct CFE_ES_OneAppTlm_Payload
 
 typedef struct CFE_ES_OneAppTlm
 {
-    CFE_MSG_TelemetryHeader_t  TlmHeader; /**< \brief Telemetry header */
-    CFE_ES_OneAppTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t  TelemetryHeader; /**< \brief Telemetry header */
+    CFE_ES_OneAppTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_ES_OneAppTlm_t;
 
 /**
@@ -1441,8 +1439,8 @@ typedef struct CFE_ES_PoolStatsTlm_Payload
 
 typedef struct CFE_ES_MemStatsTlm
 {
-    CFE_MSG_TelemetryHeader_t     TlmHeader; /**< \brief Telemetry header */
-    CFE_ES_PoolStatsTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t     TelemetryHeader; /**< \brief Telemetry header */
+    CFE_ES_PoolStatsTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 } CFE_ES_MemStatsTlm_t;
 
 /*************************************************************************/
@@ -1549,8 +1547,8 @@ typedef struct CFE_ES_HousekeepingTlm_Payload
 
 typedef struct CFE_ES_HousekeepingTlm
 {
-    CFE_MSG_TelemetryHeader_t        TlmHeader; /**< \brief Telemetry header */
-    CFE_ES_HousekeepingTlm_Payload_t Payload;   /**< \brief Telemetry payload */
+    CFE_MSG_TelemetryHeader_t        TelemetryHeader; /**< \brief Telemetry header */
+    CFE_ES_HousekeepingTlm_Payload_t Payload;         /**< \brief Telemetry payload */
 
 } CFE_ES_HousekeepingTlm_t;
 

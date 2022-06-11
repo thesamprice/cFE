@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File: ut_es_stubs.c
@@ -118,6 +116,40 @@ static const cpuaddr UT_ESPOOL_ALIGN_MASK = ((cpuaddr) & ((struct UT_AlignTest *
 
 /*------------------------------------------------------------
  *
+ * Default handler for CFE_ES_CreateChildTask coverage stub function
+ *
+ *------------------------------------------------------------*/
+void UT_DefaultHandler_CFE_ES_CreateChildTask(void *UserObj, UT_EntryKey_t FuncKey, const UT_StubContext_t *Context)
+{
+    CFE_ES_TaskId_t *TaskIdPtr = UT_Hook_GetArgValueByName(Context, "TaskIdPtr", CFE_ES_TaskId_t *);
+    int32            status;
+    void *           IdBuff;
+    size_t           BuffSize;
+    size_t           Position;
+
+    UT_Stub_GetInt32StatusCode(Context, &status);
+
+    if (status >= 0)
+    {
+        UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppID), &IdBuff, &BuffSize, &Position);
+        if (IdBuff != NULL && BuffSize == sizeof(*TaskIdPtr))
+        {
+            memcpy(TaskIdPtr, IdBuff, sizeof(*TaskIdPtr));
+        }
+        else
+        {
+            *TaskIdPtr = CFE_UT_ES_DEFAULT_TASKID;
+        }
+    }
+
+    if (status < 0)
+    {
+        *TaskIdPtr = CFE_ES_TASKID_UNDEFINED;
+    }
+}
+
+/*------------------------------------------------------------
+ *
  * Default handler for CFE_ES_GetAppID coverage stub function
  *
  *------------------------------------------------------------*/
@@ -125,7 +157,7 @@ void UT_DefaultHandler_CFE_ES_GetAppID(void *UserObj, UT_EntryKey_t FuncKey, con
 {
     CFE_ES_AppId_t *AppIdPtr = UT_Hook_GetArgValueByName(Context, "AppIdPtr", CFE_ES_AppId_t *);
     int32           status;
-    CFE_ES_AppId_t *IdBuff;
+    void *          IdBuff;
     size_t          BuffSize;
     size_t          Position;
 
@@ -133,10 +165,10 @@ void UT_DefaultHandler_CFE_ES_GetAppID(void *UserObj, UT_EntryKey_t FuncKey, con
 
     if (status >= 0)
     {
-        UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppID), (void **)&IdBuff, &BuffSize, &Position);
+        UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppID), &IdBuff, &BuffSize, &Position);
         if (IdBuff != NULL && BuffSize == sizeof(*AppIdPtr))
         {
-            *AppIdPtr = *IdBuff;
+            memcpy(AppIdPtr, IdBuff, sizeof(*AppIdPtr));
         }
         else
         {
@@ -159,7 +191,7 @@ void UT_DefaultHandler_CFE_ES_GetTaskID(void *UserObj, UT_EntryKey_t FuncKey, co
 {
     CFE_ES_TaskId_t *TaskIdPtr = UT_Hook_GetArgValueByName(Context, "TaskIdPtr", CFE_ES_TaskId_t *);
     int32            status;
-    CFE_ES_TaskId_t *IdBuff;
+    void *           IdBuff;
     size_t           BuffSize;
     size_t           Position;
 
@@ -167,10 +199,10 @@ void UT_DefaultHandler_CFE_ES_GetTaskID(void *UserObj, UT_EntryKey_t FuncKey, co
 
     if (status >= 0)
     {
-        UT_GetDataBuffer(UT_KEY(CFE_ES_GetTaskID), (void **)&IdBuff, &BuffSize, &Position);
+        UT_GetDataBuffer(UT_KEY(CFE_ES_GetTaskID), &IdBuff, &BuffSize, &Position);
         if (IdBuff != NULL && BuffSize == sizeof(*TaskIdPtr))
         {
-            *TaskIdPtr = *IdBuff;
+            memcpy(TaskIdPtr, IdBuff, sizeof(*TaskIdPtr));
         }
         else
         {
@@ -194,11 +226,11 @@ void UT_DefaultHandler_CFE_ES_GetAppIDByName(void *UserObj, UT_EntryKey_t FuncKe
     CFE_ES_AppId_t *AppIdPtr = UT_Hook_GetArgValueByName(Context, "AppIdPtr", CFE_ES_AppId_t *);
     const char *    AppName  = UT_Hook_GetArgValueByName(Context, "AppName", const char *);
 
-    size_t          UserBuffSize;
-    size_t          BuffPosition;
-    const char *    NameBuff;
-    CFE_ES_AppId_t *IdBuff;
-    int32           status;
+    size_t UserBuffSize;
+    size_t BuffPosition;
+    void * NameBuff;
+    void * IdBuff;
+    int32  status;
 
     UT_Stub_GetInt32StatusCode(Context, &status);
 
@@ -207,15 +239,15 @@ void UT_DefaultHandler_CFE_ES_GetAppIDByName(void *UserObj, UT_EntryKey_t FuncKe
         if (UT_Stub_CopyToLocal(UT_KEY(CFE_ES_GetAppIDByName), AppIdPtr, sizeof(*AppIdPtr)) < sizeof(*AppIdPtr))
         {
             IdBuff = NULL;
-            UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppName), (void **)&NameBuff, &UserBuffSize, &BuffPosition);
-            if (NameBuff != NULL && UserBuffSize > 0 && strncmp(NameBuff, AppName, UserBuffSize) == 0)
+            UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppName), &NameBuff, &UserBuffSize, &BuffPosition);
+            if (NameBuff != NULL && UserBuffSize > 0 && strncmp((const char *)NameBuff, AppName, UserBuffSize) == 0)
             {
-                UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppID), (void **)&IdBuff, &UserBuffSize, &BuffPosition);
+                UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppID), &IdBuff, &UserBuffSize, &BuffPosition);
             }
 
             if (IdBuff != NULL && UserBuffSize == sizeof(*AppIdPtr))
             {
-                *AppIdPtr = *IdBuff;
+                memcpy(AppIdPtr, IdBuff, sizeof(*AppIdPtr));
             }
             else
             {
@@ -243,17 +275,22 @@ void UT_DefaultHandler_CFE_ES_GetAppName(void *UserObj, UT_EntryKey_t FuncKey, c
     size_t      UserBuffSize;
     size_t      BuffPosition;
     const char *NameBuff;
+    void *      TempBuff;
     int32       status;
 
     UT_Stub_GetInt32StatusCode(Context, &status);
 
     if (status >= 0 && BufferLength > 0)
     {
-        UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppName), (void **)&NameBuff, &UserBuffSize, &BuffPosition);
-        if (NameBuff == NULL || UserBuffSize == 0)
+        UT_GetDataBuffer(UT_KEY(CFE_ES_GetAppName), &TempBuff, &UserBuffSize, &BuffPosition);
+        if (TempBuff == NULL || UserBuffSize == 0)
         {
             NameBuff     = "UT";
             UserBuffSize = 2;
+        }
+        else
+        {
+            NameBuff = TempBuff;
         }
 
         if (UserBuffSize < BufferLength)

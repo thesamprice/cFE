@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: es_info_test.c
-**
-** Purpose:
-**   Functional test of FS File Utility APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of FS File Utility APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -37,8 +33,26 @@ void TestFileCategory(void)
 {
     UtPrintf("Testing: CFE_FS_GetDefaultMountPoint, CFE_FS_GetDefaultExtension");
 
-    UtAssert_NULL(CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_UNKNOWN));
-    UtAssert_NULL(CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_UNKNOWN));
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_UNKNOWN);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_UNKNOWN);
+
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_DYNAMIC_MODULE);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_DYNAMIC_MODULE);
+
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_BINARY_DATA_DUMP);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_BINARY_DATA_DUMP);
+
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_TEXT_LOG);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_TEXT_LOG);
+
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_SCRIPT);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_SCRIPT);
+
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_TEMP);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_TEMP);
+
+    CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_MAX);
+    CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_MAX);
 }
 
 void TestInputFile(void)
@@ -101,6 +115,8 @@ void TestFileName(void)
     char       Path[OS_MAX_PATH_LEN + 4];
     char       Name[OS_MAX_FILE_NAME];
     const char ExpectedName[] = "FileName.test";
+
+    memset(Name, 0, sizeof(Name));
 
     UtPrintf("Testing: CFE_FS_ExtractFilenameFromPath");
 

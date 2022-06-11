@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /******************************************************************************
 ** File: cfe_sb_task.c
@@ -204,10 +202,10 @@ int32 CFE_SB_AppInit(void)
 
     CFE_ES_WriteToSysLog("%s: Registered %d events for filtering\n", __func__, (int)CfgFileEventsToFilter);
 
-    CFE_MSG_Init(&CFE_SB_Global.HKTlmMsg.Hdr.Msg, CFE_SB_ValueToMsgId(CFE_SB_HK_TLM_MID),
+    CFE_MSG_Init(CFE_MSG_PTR(CFE_SB_Global.HKTlmMsg.TelemetryHeader), CFE_SB_ValueToMsgId(CFE_SB_HK_TLM_MID),
                  sizeof(CFE_SB_Global.HKTlmMsg));
 
-    CFE_MSG_Init(&CFE_SB_Global.PrevSubMsg.Hdr.Msg, CFE_SB_ValueToMsgId(CFE_SB_ALLSUBS_TLM_MID),
+    CFE_MSG_Init(CFE_MSG_PTR(CFE_SB_Global.PrevSubMsg.TelemetryHeader), CFE_SB_ValueToMsgId(CFE_SB_ALLSUBS_TLM_MID),
                  sizeof(CFE_SB_Global.PrevSubMsg));
 
     /* Populate the fixed fields in the HK Tlm Msg */
@@ -535,8 +533,8 @@ int32 CFE_SB_SendHKTlmCmd(const CFE_MSG_CommandHeader_t *data)
 
     CFE_SB_UnlockSharedData(__FILE__, __LINE__);
 
-    CFE_SB_TimeStampMsg(&CFE_SB_Global.HKTlmMsg.Hdr.Msg);
-    CFE_SB_TransmitMsg(&CFE_SB_Global.HKTlmMsg.Hdr.Msg, true);
+    CFE_SB_TimeStampMsg(CFE_MSG_PTR(CFE_SB_Global.HKTlmMsg.TelemetryHeader));
+    CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_SB_Global.HKTlmMsg.TelemetryHeader), true);
 
     return CFE_SUCCESS;
 }
@@ -757,8 +755,8 @@ int32 CFE_SB_SendStatsCmd(const CFE_SB_SendSbStatsCmd_t *data)
         --PipeStatCount;
     }
 
-    CFE_SB_TimeStampMsg(&CFE_SB_Global.StatTlmMsg.Hdr.Msg);
-    CFE_SB_TransmitMsg(&CFE_SB_Global.StatTlmMsg.Hdr.Msg, true);
+    CFE_SB_TimeStampMsg(CFE_MSG_PTR(CFE_SB_Global.StatTlmMsg.TelemetryHeader));
+    CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_SB_Global.StatTlmMsg.TelemetryHeader), true);
 
     CFE_EVS_SendEvent(CFE_SB_SND_STATS_EID, CFE_EVS_EventType_DEBUG, "Software Bus Statistics packet sent");
 
@@ -859,20 +857,21 @@ void CFE_SB_CollectRouteInfo(CFE_SBR_RouteId_t RouteId, void *ArgPtr)
 int32 CFE_SB_SendSubscriptionReport(CFE_SB_MsgId_t MsgId, CFE_SB_PipeId_t PipeId, CFE_SB_Qos_t Quality)
 {
     CFE_SB_SingleSubscriptionTlm_t SubRptMsg;
-    int32                          Status;
+    int32                          Status = CFE_SUCCESS;
 
-    Status = CFE_SUCCESS;
+    memset(&SubRptMsg, 0, sizeof(SubRptMsg));
 
     if (CFE_SB_Global.SubscriptionReporting == CFE_SB_ENABLE)
     {
-        CFE_MSG_Init(&SubRptMsg.Hdr.Msg, CFE_SB_ValueToMsgId(CFE_SB_ONESUB_TLM_MID), sizeof(SubRptMsg));
+        CFE_MSG_Init(CFE_MSG_PTR(SubRptMsg.TelemetryHeader), CFE_SB_ValueToMsgId(CFE_SB_ONESUB_TLM_MID),
+                     sizeof(SubRptMsg));
 
         SubRptMsg.Payload.MsgId   = MsgId;
         SubRptMsg.Payload.Pipe    = PipeId;
         SubRptMsg.Payload.Qos     = Quality;
         SubRptMsg.Payload.SubType = CFE_SB_SUBSCRIPTION;
 
-        Status = CFE_SB_TransmitMsg(&SubRptMsg.Hdr.Msg, true);
+        Status = CFE_SB_TransmitMsg(CFE_MSG_PTR(SubRptMsg.TelemetryHeader), true);
         CFE_EVS_SendEventWithAppID(CFE_SB_SUBSCRIPTION_RPT_EID, CFE_EVS_EventType_DEBUG, CFE_SB_Global.AppId,
                                    "Sending Subscription Report Msg=0x%x,Pipe=%lu,Stat=0x%x",
                                    (unsigned int)CFE_SB_MsgIdToValue(MsgId), CFE_RESOURCEID_TO_ULONG(PipeId),
@@ -1334,7 +1333,7 @@ void CFE_SB_SendRouteSub(CFE_SBR_RouteId_t RouteId, void *ArgPtr)
             if (CFE_SB_Global.PrevSubMsg.Payload.Entries >= CFE_SB_SUB_ENTRIES_PER_PKT)
             {
                 CFE_SB_UnlockSharedData(__func__, __LINE__);
-                status = CFE_SB_TransmitMsg(&CFE_SB_Global.PrevSubMsg.Hdr.Msg, true);
+                status = CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_SB_Global.PrevSubMsg.TelemetryHeader), true);
                 CFE_EVS_SendEvent(CFE_SB_FULL_SUB_PKT_EID, CFE_EVS_EventType_DEBUG,
                                   "Full Sub Pkt %d Sent,Entries=%d,Stat=0x%x\n",
                                   (int)CFE_SB_Global.PrevSubMsg.Payload.PktSegment,
@@ -1385,7 +1384,7 @@ int32 CFE_SB_SendPrevSubsCmd(const CFE_SB_SendPrevSubsCmd_t *data)
     /* if pkt has any number of entries, send it as a partial pkt */
     if (CFE_SB_Global.PrevSubMsg.Payload.Entries > 0)
     {
-        status = CFE_SB_TransmitMsg(&CFE_SB_Global.PrevSubMsg.Hdr.Msg, true);
+        status = CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_SB_Global.PrevSubMsg.TelemetryHeader), true);
         CFE_EVS_SendEvent(CFE_SB_PART_SUB_PKT_EID, CFE_EVS_EventType_DEBUG,
                           "Partial Sub Pkt %d Sent,Entries=%d,Stat=0x%x",
                           (int)CFE_SB_Global.PrevSubMsg.Payload.PktSegment,

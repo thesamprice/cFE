@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: es_resource_id_test.c
-**
-** Purpose:
-**   Functional test of ES Resource ID APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of ES Resource ID APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -54,8 +50,9 @@ void TestLibIDToIndex(void)
     UtPrintf("Testing: CFE_ES_LibID_ToIndex");
     const char *   LibName = "ASSERT_LIB";
     CFE_ES_LibId_t LibId;
-    uint32         LibIdx;
-    uint32         idx;
+    uint32         LibIdx = 0;
+    uint32         idx    = 0;
+
     UtAssert_INT32_EQ(CFE_ES_GetLibIDByName(&LibId, LibName), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_ES_LibID_ToIndex(LibId, &LibIdx), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_ES_LibID_ToIndex(LibId, &idx), CFE_SUCCESS);
@@ -68,10 +65,12 @@ void TestLibIDToIndex(void)
 
 void TestTaskIDToIndex(void)
 {
+    CFE_ES_TaskId_t TaskId  = CFE_ES_TASKID_UNDEFINED;
+    uint32          TaskIdx = 0;
+    uint32          idx     = 0;
+
     UtPrintf("Testing: CFE_ES_TaskID_ToIndex");
-    CFE_ES_TaskId_t TaskId;
-    uint32          TaskIdx;
-    uint32          idx;
+
     UtAssert_INT32_EQ(CFE_ES_GetTaskID(&TaskId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_ES_TaskID_ToIndex(TaskId, &TaskIdx), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_ES_TaskID_ToIndex(TaskId, &idx), CFE_SUCCESS);

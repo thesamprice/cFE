@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
  * Test SBR unsorted route implementation
@@ -51,8 +49,8 @@ void Test_SBR_Route_Unsort_General(void)
     CFE_SBR_Init();
 
     UtPrintf("Invalid msg checks");
-    UtAssert_BOOL_FALSE(CFE_SBR_IsValidRouteId(CFE_SBR_AddRoute(CFE_SB_ValueToMsgId(0), NULL)));
-    UtAssert_BOOL_FALSE(CFE_SBR_IsValidRouteId(CFE_SBR_AddRoute(CFE_SB_ValueToMsgId(0), &collisions)));
+    UtAssert_BOOL_FALSE(CFE_SBR_IsValidRouteId(CFE_SBR_AddRoute(CFE_SB_INVALID_MSG_ID, NULL)));
+    UtAssert_BOOL_FALSE(CFE_SBR_IsValidRouteId(CFE_SBR_AddRoute(CFE_SB_INVALID_MSG_ID, &collisions)));
     UtAssert_INT32_EQ(collisions, 0);
 
     /*
@@ -159,7 +157,7 @@ void Test_SBR_Route_Unsort_GetSet(void)
     UtAssert_INT32_EQ(count, 0);
 
     UtPrintf("Add routes and initialize values for testing");
-    msgid[0] = CFE_SB_ValueToMsgId(0);
+    msgid[0] = CFE_SB_INVALID_MSG_ID;
     msgid[1] = CFE_SB_ValueToMsgId(1);
     msgid[2] = CFE_SB_ValueToMsgId(CFE_PLATFORM_SB_HIGHEST_VALID_MSGID);
 

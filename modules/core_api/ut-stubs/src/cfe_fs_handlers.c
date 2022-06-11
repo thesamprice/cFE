@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File: ut_fs_stubs.c
@@ -50,6 +48,7 @@ void UT_DefaultHandler_CFE_FS_GetDefaultMountPoint(void *UserObj, UT_EntryKey_t 
 {
     int32             Status;
     static const char DEFAULT_MOUNTPOINT[] = "/ut";
+    void *            TempBuff;
     const char *      Result;
 
     UT_Stub_GetInt32StatusCode(Context, &Status);
@@ -58,10 +57,14 @@ void UT_DefaultHandler_CFE_FS_GetDefaultMountPoint(void *UserObj, UT_EntryKey_t 
     if (Status == CFE_SUCCESS)
     {
         /* If the test case supplied a buffer, return it, otherwise return fixed value */
-        UT_GetDataBuffer(UT_KEY(CFE_FS_GetDefaultMountPoint), (void **)&Result, NULL, NULL);
-        if (Result == NULL)
+        UT_GetDataBuffer(UT_KEY(CFE_FS_GetDefaultMountPoint), &TempBuff, NULL, NULL);
+        if (TempBuff == NULL)
         {
             Result = DEFAULT_MOUNTPOINT;
+        }
+        else
+        {
+            Result = TempBuff;
         }
     }
 
@@ -77,6 +80,7 @@ void UT_DefaultHandler_CFE_FS_GetDefaultExtension(void *UserObj, UT_EntryKey_t F
 {
     int32             Status;
     static const char DEFAULT_EXTENSION[] = ".ut";
+    void *            TempBuff;
     const char *      Result;
 
     UT_Stub_GetInt32StatusCode(Context, &Status);
@@ -85,10 +89,14 @@ void UT_DefaultHandler_CFE_FS_GetDefaultExtension(void *UserObj, UT_EntryKey_t F
     if (Status == CFE_SUCCESS)
     {
         /* If the test case supplied a buffer, return it, otherwise return fixed value */
-        UT_GetDataBuffer(UT_KEY(CFE_FS_GetDefaultExtension), (void **)&Result, NULL, NULL);
-        if (Result == NULL)
+        UT_GetDataBuffer(UT_KEY(CFE_FS_GetDefaultExtension), &TempBuff, NULL, NULL);
+        if (TempBuff == NULL)
         {
             Result = DEFAULT_EXTENSION;
+        }
+        else
+        {
+            Result = TempBuff;
         }
     }
 
@@ -151,6 +159,7 @@ void UT_DefaultHandler_CFE_FS_ParseInputFileNameEx(void *UserObj, UT_EntryKey_t 
 {
     char *      OutputBuffer  = UT_Hook_GetArgValueByName(Context, "OutputBuffer", char *);
     size_t      OutputBufSize = UT_Hook_GetArgValueByName(Context, "OutputBufSize", size_t);
+    const char *InputBuffer   = UT_Hook_GetArgValueByName(Context, "InputBuffer", const char *);
     const char *DefaultInput  = UT_Hook_GetArgValueByName(Context, "DefaultInput", const char *);
 
     int32 status;
@@ -159,10 +168,18 @@ void UT_DefaultHandler_CFE_FS_ParseInputFileNameEx(void *UserObj, UT_EntryKey_t 
 
     /* Copy any specific output supplied by test case */
     if (status >= 0 && UT_Stub_CopyToLocal(UT_KEY(CFE_FS_ParseInputFileNameEx), OutputBuffer, OutputBufSize) == 0 &&
-        OutputBufSize > 0 && DefaultInput != NULL)
+        OutputBufSize > 0)
     {
-        /* Otherwise fall back to simple copy */
-        strncpy(OutputBuffer, DefaultInput, OutputBufSize);
+        if (DefaultInput != NULL)
+        {
+            /* Use default if set */
+            strncpy(OutputBuffer, DefaultInput, OutputBufSize);
+        }
+        else
+        {
+            /* Fall back to copy input to avoid uninitialized output */
+            strncpy(OutputBuffer, InputBuffer, OutputBufSize);
+        }
     }
 }
 

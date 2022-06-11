@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -64,7 +62,7 @@
  * @param[in]   AppID   the app ID to locate
  * @return pointer to App Table entry for the given app ID, or NULL if out of range
  */
-extern CFE_ES_AppRecord_t *CFE_ES_LocateAppRecordByID(CFE_ES_AppId_t AppID);
+CFE_ES_AppRecord_t *CFE_ES_LocateAppRecordByID(CFE_ES_AppId_t AppID);
 
 /*---------------------------------------------------------------------------------------*/
 /**
@@ -92,7 +90,7 @@ extern CFE_ES_AppRecord_t *CFE_ES_LocateAppRecordByID(CFE_ES_AppId_t AppID);
  * @param[in]   LibID   the Lib ID to locate
  * @return pointer to Library Table entry for the given Lib ID, or NULL if out of range
  */
-extern CFE_ES_LibRecord_t *CFE_ES_LocateLibRecordByID(CFE_ES_LibId_t LibID);
+CFE_ES_LibRecord_t *CFE_ES_LocateLibRecordByID(CFE_ES_LibId_t LibID);
 
 /*---------------------------------------------------------------------------------------*/
 /**
@@ -120,7 +118,7 @@ extern CFE_ES_LibRecord_t *CFE_ES_LocateLibRecordByID(CFE_ES_LibId_t LibID);
  * @param[in]   TaskID   the task ID to locate
  * @return pointer to Task Table entry for the given task ID, or NULL if out of range
  */
-extern CFE_ES_TaskRecord_t *CFE_ES_LocateTaskRecordByID(CFE_ES_TaskId_t TaskID);
+CFE_ES_TaskRecord_t *CFE_ES_LocateTaskRecordByID(CFE_ES_TaskId_t TaskID);
 
 /*---------------------------------------------------------------------------------------*/
 /**
@@ -148,7 +146,7 @@ extern CFE_ES_TaskRecord_t *CFE_ES_LocateTaskRecordByID(CFE_ES_TaskId_t TaskID);
  * @param[in]   CounterID   the Counter ID to locate
  * @return pointer to Counter Table entry for the given Counter ID, or NULL if out of range
  */
-extern CFE_ES_GenCounterRecord_t *CFE_ES_LocateCounterRecordByID(CFE_ES_CounterId_t CounterID);
+CFE_ES_GenCounterRecord_t *CFE_ES_LocateCounterRecordByID(CFE_ES_CounterId_t CounterID);
 
 /*---------------------------------------------------------------------------------------*/
 /**
@@ -659,7 +657,7 @@ static inline const char *CFE_ES_CounterRecordGetName(const CFE_ES_GenCounterRec
  *
  * The global data lock should be obtained prior to invoking this function.
  */
-extern CFE_ES_AppRecord_t *CFE_ES_GetAppRecordByContext(void);
+CFE_ES_AppRecord_t *CFE_ES_GetAppRecordByContext(void);
 
 /*---------------------------------------------------------------------------------------*/
 /**
@@ -672,7 +670,7 @@ extern CFE_ES_AppRecord_t *CFE_ES_GetAppRecordByContext(void);
  *
  * The global data lock should be obtained prior to invoking this function.
  */
-extern CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void);
+CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void);
 
 /*
  * OSAL <-> CFE task ID conversion
@@ -706,7 +704,7 @@ extern CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void);
  * @param[in] id    The CFE task ID
  * @returns         The OSAL task ID
  */
-extern osal_id_t CFE_ES_TaskId_ToOSAL(CFE_ES_TaskId_t id);
+osal_id_t CFE_ES_TaskId_ToOSAL(CFE_ES_TaskId_t id);
 
 /*---------------------------------------------------------------------------------------*/
 /**
@@ -727,7 +725,7 @@ extern osal_id_t CFE_ES_TaskId_ToOSAL(CFE_ES_TaskId_t id);
  * @param[in] id    The OSAL task ID
  * @returns         The CFE task ID
  */
-extern CFE_ES_TaskId_t CFE_ES_TaskId_FromOSAL(osal_id_t id);
+CFE_ES_TaskId_t CFE_ES_TaskId_FromOSAL(osal_id_t id);
 
 /*
  * Internal functions to perform name based resource lookups

@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File: cfe_time_tone.c
@@ -154,7 +152,7 @@ void CFE_TIME_ToneSend(void)
     /*
     ** Send "time at the tone" command data packet...
     */
-    CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CmdHeader.Msg, false);
+    CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TIME_Global.ToneDataCmd.CommandHeader), false);
 
     /*
     ** Count of "time at the tone" commands sent with internal data...
@@ -283,7 +281,7 @@ int32 CFE_TIME_ToneSendMET(CFE_TIME_SysTime_t NewMET)
             /*
             ** Send "time at the tone" command data packet...
             */
-            CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CmdHeader.Msg, false);
+            CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CommandHeader.Msg, false);
 
             /*
             ** Count of "time at the tone" commands sent with external data...
@@ -425,7 +423,7 @@ int32 CFE_TIME_ToneSendGPS(CFE_TIME_SysTime_t NewTime, int16 NewLeaps)
             /*
             ** Send "time at the tone" command data packet...
             */
-            CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CmdHeader.Msg, false);
+            CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CommandHeader.Msg, false);
 
             /*
             ** Count of "time at the tone" commands sent with external data...
@@ -567,7 +565,7 @@ int32 CFE_TIME_ToneSendTime(CFE_TIME_SysTime_t NewTime)
             /*
             ** Send "time at the tone" command data packet...
             */
-            CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CmdHeader.Msg, false);
+            CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneDataCmd.CommandHeader.Msg, false);
 
             /*
             ** Count of "time at the tone" commands sent with external data...
@@ -1125,7 +1123,7 @@ void CFE_TIME_Tone1HzTask(void)
         /*
         ** Send tone signal command packet...
         */
-        CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneSignalCmd.CmdHeader.Msg, false);
+        CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TIME_Global.ToneSignalCmd.CommandHeader), false);
 
 #if (CFE_MISSION_TIME_CFG_FAKE_TONE == true)
         /*
@@ -1133,7 +1131,7 @@ void CFE_TIME_Tone1HzTask(void)
         ** to send the tone to other time clients.
         ** (this is done by scheduler in non-fake mode)
         */
-        CFE_SB_TransmitMsg(&CFE_TIME_Global.ToneSendCmd.CmdHeader.Msg, false);
+        CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TIME_Global.ToneSendCmd.CommandHeader), false);
 #endif
 
         /*
@@ -1336,7 +1334,7 @@ void CFE_TIME_Local1HzTask(void)
         ** This used to be optional in previous CFE versions, but it is now required
         ** as TIME subscribes to this itself to do state machine tasks.
         */
-        CFE_SB_TransmitMsg(&CFE_TIME_Global.Local1HzCmd.CmdHeader.Msg, false);
+        CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TIME_Global.Local1HzCmd.CommandHeader), false);
 
         CFE_TIME_Global.LocalTaskCounter++;
 

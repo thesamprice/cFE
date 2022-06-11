@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /*
 ** File: cfe_tbl_internal.c
@@ -814,8 +812,8 @@ int32 CFE_TBL_LoadFromFile(const char *AppName, CFE_TBL_LoadBuff_t *WorkingBuffe
     int32              OsStatus;
     CFE_FS_Header_t    StdFileHeader;
     CFE_TBL_File_Hdr_t TblFileHeader;
-    osal_id_t          FileDescriptor;
-    size_t             FilenameLen = strlen(Filename);
+    osal_id_t          FileDescriptor = OS_OBJECT_ID_UNDEFINED;
+    size_t             FilenameLen    = strlen(Filename);
     uint32             NumBytes;
     uint8              ExtraByte;
 
@@ -1423,16 +1421,16 @@ int32 CFE_TBL_SendNotificationMsg(CFE_TBL_RegistryRec_t *RegRecPtr)
     if (RegRecPtr->NotifyByMsg)
     {
         /* Set the message ID */
-        CFE_MSG_SetMsgId(&CFE_TBL_Global.NotifyMsg.CmdHeader.Msg, RegRecPtr->NotificationMsgId);
+        CFE_MSG_SetMsgId(CFE_MSG_PTR(CFE_TBL_Global.NotifyMsg.CommandHeader), RegRecPtr->NotificationMsgId);
 
         /* Set the command code */
-        CFE_MSG_SetFcnCode(&CFE_TBL_Global.NotifyMsg.CmdHeader.Msg, RegRecPtr->NotificationCC);
+        CFE_MSG_SetFcnCode(CFE_MSG_PTR(CFE_TBL_Global.NotifyMsg.CommandHeader), RegRecPtr->NotificationCC);
 
         /* Set the command parameter */
         CFE_TBL_Global.NotifyMsg.Payload.Parameter = RegRecPtr->NotificationParam;
 
-        CFE_SB_TimeStampMsg(&CFE_TBL_Global.NotifyMsg.CmdHeader.Msg);
-        Status = CFE_SB_TransmitMsg(&CFE_TBL_Global.NotifyMsg.CmdHeader.Msg, false);
+        CFE_SB_TimeStampMsg(CFE_MSG_PTR(CFE_TBL_Global.NotifyMsg.CommandHeader));
+        Status = CFE_SB_TransmitMsg(CFE_MSG_PTR(CFE_TBL_Global.NotifyMsg.CommandHeader), false);
 
         if (Status != CFE_SUCCESS)
         {

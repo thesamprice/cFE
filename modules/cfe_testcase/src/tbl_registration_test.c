@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: tbl_registration_test.c
-**
-** Purpose:
-**   Functional test of Table Registration APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of Table Registration APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -43,7 +39,7 @@ int32 CallbackFunc(void *TblPtr)
 void TestTableRegistration(void)
 {
     char             BadTblName[CFE_TBL_MAX_FULL_NAME_LEN + 2];
-    CFE_TBL_Handle_t OtherHandle;
+    CFE_TBL_Handle_t OtherHandle = CFE_TBL_BAD_TABLE_HANDLE;
 
     UtPrintf("Testing: CFE_TBL_Register, CFE_TBL_Unregister");
 
@@ -109,7 +105,7 @@ void TestTableRegistration(void)
 
 void TestTableMaxLimits(void)
 {
-    CFE_TBL_Handle_t Handles[CFE_PLATFORM_TBL_MAX_NUM_HANDLES + 1];
+    CFE_TBL_Handle_t Handles[CFE_PLATFORM_TBL_MAX_NUM_HANDLES + 2];
     char             TblName[CFE_TBL_MAX_FULL_NAME_LEN];
     uint32           numTblsCreated = 0; /* Track num created to unregister them all */
 
@@ -220,7 +216,7 @@ void TestTblNonAppContext(void)
                       CFE_ES_ERR_RESOURCEID_NOT_VALID);
     UtAssert_INT32_EQ(CFE_TBL_Manage(CFE_FT_Global.TblHandle), CFE_ES_ERR_RESOURCEID_NOT_VALID);
     UtAssert_INT32_EQ(CFE_TBL_Modified(CFE_FT_Global.TblHandle), CFE_ES_ERR_RESOURCEID_NOT_VALID);
-    UtAssert_INT32_EQ(CFE_TBL_NotifyByMessage(CFE_FT_Global.TblHandle, CFE_TEST_CMD_MID, 0, 0),
+    UtAssert_INT32_EQ(CFE_TBL_NotifyByMessage(CFE_FT_Global.TblHandle, CFE_SB_ValueToMsgId(CFE_TEST_CMD_MID), 0, 0),
                       CFE_ES_ERR_RESOURCEID_NOT_VALID);
     UtAssert_INT32_EQ(CFE_TBL_ReleaseAddress(CFE_FT_Global.TblHandle), CFE_ES_ERR_RESOURCEID_NOT_VALID);
     UtAssert_INT32_EQ(CFE_TBL_Share(&Handle, CFE_FT_Global.TblName), CFE_ES_ERR_RESOURCEID_NOT_VALID);
@@ -234,7 +230,7 @@ void TestTblNonAppContext(void)
 void TestTableBadContext(void)
 {
     uint32         RetryCount;
-    osal_id_t      OtherTaskId;
+    osal_id_t      OtherTaskId = OS_OBJECT_ID_UNDEFINED;
     OS_task_prop_t TaskProp;
 
     /* Create one (good) handle first from this task */

@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: tbl_content_access_test.c
-**
-** Purpose:
-**   Functional test of Table Access Content APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of Table Access Content APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -44,10 +40,15 @@ void LoadTable(TBL_TEST_Table_t *TestTable, CFE_Status_t ExpectedStatus)
 
 void TestGetAddress(void)
 {
-    UtPrintf("Testing: CFE_TBL_GetAddress");
     void *            TblPtr;
     TBL_TEST_Table_t *TestTblPtr;
     TBL_TEST_Table_t  TestTable = {1, 2};
+
+    CFE_TBL_Handle_t SharedTblHandle = CFE_TBL_BAD_TABLE_HANDLE;
+    const char *     SharedTblName   = "SAMPLE_APP.SampleAppTable";
+
+    UtPrintf("Testing: CFE_TBL_GetAddress");
+
     /* Never loaded */
     UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TblPtr, CFE_FT_Global.TblHandle), CFE_TBL_ERR_NEVER_LOADED);
     UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TblPtr, CFE_TBL_BAD_TABLE_HANDLE), CFE_TBL_ERR_INVALID_HANDLE);
@@ -68,8 +69,6 @@ void TestGetAddress(void)
     UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TblPtr, CFE_FT_Global.TblHandle), CFE_TBL_ERR_INVALID_HANDLE);
 
     /* Access a shared table */
-    CFE_TBL_Handle_t SharedTblHandle;
-    const char *     SharedTblName = "SAMPLE_APP.SampleAppTable";
     UtAssert_INT32_EQ(CFE_TBL_Share(&SharedTblHandle, SharedTblName), CFE_SUCCESS);
     /* Returns CFE_TBL_INFO_UPDATED since it hasn't been touched since it was loaded */
     UtAssert_INT32_EQ(CFE_TBL_GetAddress(&TblPtr, SharedTblHandle), CFE_TBL_INFO_UPDATED);

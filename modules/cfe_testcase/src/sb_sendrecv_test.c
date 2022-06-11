@@ -1,24 +1,20 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -39,15 +35,15 @@
 /* A simple command message */
 typedef struct
 {
-    CFE_MSG_CommandHeader_t CmdHeader;
-    uint32                  CmdPayload;
+    CFE_MSG_CommandHeader_t CommandHeader;
+    uint64                  CmdPayload;
 } CFE_FT_TestCmdMessage_t;
 
 /* A simple telemetry message */
 typedef struct
 {
-    CFE_MSG_TelemetryHeader_t TlmHeader;
-    uint32                    TlmPayload;
+    CFE_MSG_TelemetryHeader_t TelemetryHeader;
+    uint64                    TlmPayload;
 } CFE_FT_TestTlmMessage_t;
 
 /* A message intended to be (overall) larger than the CFE_MISSION_SB_MAX_SB_MSG_SIZE */
@@ -71,8 +67,8 @@ static CFE_FT_TestBigMessage_t CFE_FT_BigMsg;
 
 void TestBasicTransmitRecv(void)
 {
-    CFE_SB_PipeId_t                PipeId1;
-    CFE_SB_PipeId_t                PipeId2;
+    CFE_SB_PipeId_t                PipeId1 = CFE_SB_INVALID_PIPE;
+    CFE_SB_PipeId_t                PipeId2 = CFE_SB_INVALID_PIPE;
     CFE_FT_TestCmdMessage_t        CmdMsg;
     CFE_FT_TestTlmMessage_t        TlmMsg;
     CFE_SB_MsgId_t                 MsgId;
@@ -80,6 +76,9 @@ void TestBasicTransmitRecv(void)
     CFE_SB_Buffer_t *              MsgBuf;
     const CFE_FT_TestCmdMessage_t *CmdPtr;
     const CFE_FT_TestTlmMessage_t *TlmPtr;
+
+    memset(&CmdMsg, 0, sizeof(CmdMsg));
+    memset(&TlmMsg, 0, sizeof(TlmMsg));
 
     UtPrintf("Testing: CFE_SB_TransmitMsg");
 
@@ -90,34 +89,34 @@ void TestBasicTransmitRecv(void)
     UtAssert_INT32_EQ(CFE_SB_SubscribeEx(CFE_FT_TLM_MSGID, PipeId2, CFE_SB_DEFAULT_QOS, 3), CFE_SUCCESS);
 
     /* Initialize the message content */
-    UtAssert_INT32_EQ(CFE_MSG_Init(&CmdMsg.CmdHeader.Msg, CFE_FT_CMD_MSGID, sizeof(CmdMsg)), CFE_SUCCESS);
-    UtAssert_INT32_EQ(CFE_MSG_Init(&TlmMsg.TlmHeader.Msg, CFE_FT_TLM_MSGID, sizeof(TlmMsg)), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_MSG_Init(CFE_MSG_PTR(CmdMsg.CommandHeader), CFE_FT_CMD_MSGID, sizeof(CmdMsg)), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_MSG_Init(CFE_MSG_PTR(TlmMsg.TelemetryHeader), CFE_FT_TLM_MSGID, sizeof(TlmMsg)), CFE_SUCCESS);
 
-    CFE_MSG_SetSequenceCount(&CmdMsg.CmdHeader.Msg, 11);
-    CFE_MSG_SetSequenceCount(&TlmMsg.TlmHeader.Msg, 21);
+    CFE_MSG_SetSequenceCount(CFE_MSG_PTR(CmdMsg.CommandHeader), 11);
+    CFE_MSG_SetSequenceCount(CFE_MSG_PTR(TlmMsg.TelemetryHeader), 21);
 
     /* Sending with sequence update should ignore the sequence in the msg struct */
     CmdMsg.CmdPayload = 0x0c0ffee;
     TlmMsg.TlmPayload = 0x0d00d1e;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&TlmMsg.TlmHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(TlmMsg.TelemetryHeader), true), CFE_SUCCESS);
 
     CmdMsg.CmdPayload = 0x1c0ffee;
     TlmMsg.TlmPayload = 0x1d00d1e;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&TlmMsg.TlmHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(TlmMsg.TelemetryHeader), true), CFE_SUCCESS);
 
     /* Sending without sequence update should use the sequence in the msg struct */
     CmdMsg.CmdPayload = 0x2c0ffee;
     TlmMsg.TlmPayload = 0x2d00d1e;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, false), CFE_SUCCESS);
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&TlmMsg.TlmHeader.Msg, false), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), false), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(TlmMsg.TelemetryHeader), false), CFE_SUCCESS);
 
     /* Sending again should trigger MsgLimit errors on the pipe, however the call still returns CFE_SUCCESS */
     CmdMsg.CmdPayload = 0x3c0ffee;
     TlmMsg.TlmPayload = 0x3d00d1e;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&TlmMsg.TlmHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(TlmMsg.TelemetryHeader), true), CFE_SUCCESS);
 
     /* Attempt to send a msg which does not have a valid msgid  */
     memset(&CFE_FT_BigMsg, 0xFF, sizeof(CFE_FT_BigMsg));
@@ -154,7 +153,7 @@ void TestBasicTransmitRecv(void)
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId1, CFE_SB_PEND_FOREVER), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetSequenceCount(&MsgBuf->Msg, &Seq1), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0x0c0ffee);
     UtAssert_UINT32_EQ(Seq1, 11);
@@ -162,7 +161,7 @@ void TestBasicTransmitRecv(void)
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId1, CFE_SB_PEND_FOREVER), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetSequenceCount(&MsgBuf->Msg, &Seq1), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0x1c0ffee);
     UtAssert_UINT32_EQ(Seq1, 11);
@@ -170,7 +169,7 @@ void TestBasicTransmitRecv(void)
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId1, CFE_SB_PEND_FOREVER), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetSequenceCount(&MsgBuf->Msg, &Seq1), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0x2c0ffee);
     UtAssert_UINT32_EQ(Seq1, 11);
@@ -186,14 +185,14 @@ void TestBasicTransmitRecv(void)
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId2, 100), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetSequenceCount(&MsgBuf->Msg, &Seq1), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
     TlmPtr = (const CFE_FT_TestTlmMessage_t *)MsgBuf;
     UtAssert_UINT32_EQ(TlmPtr->TlmPayload, 0x0d00d1e);
 
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId2, 100), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetSequenceCount(&MsgBuf->Msg, &Seq2), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
     TlmPtr = (const CFE_FT_TestTlmMessage_t *)MsgBuf;
     UtAssert_UINT32_EQ(TlmPtr->TlmPayload, 0x1d00d1e);
     UtAssert_UINT32_EQ(Seq2, CFE_MSG_GetNextSequenceCount(Seq1));
@@ -201,7 +200,7 @@ void TestBasicTransmitRecv(void)
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId2, 100), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetSequenceCount(&MsgBuf->Msg, &Seq2), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
     TlmPtr = (const CFE_FT_TestTlmMessage_t *)MsgBuf;
     UtAssert_UINT32_EQ(TlmPtr->TlmPayload, 0x2d00d1e);
     UtAssert_UINT32_EQ(Seq2, 21);
@@ -222,10 +221,10 @@ void TestBasicTransmitRecv(void)
  */
 void TestMsgBroadcast(void)
 {
-    CFE_SB_PipeId_t                PipeId1;
-    CFE_SB_PipeId_t                PipeId2;
-    CFE_SB_PipeId_t                PipeId3;
-    CFE_SB_PipeId_t                PipeId4;
+    CFE_SB_PipeId_t                PipeId1 = CFE_SB_INVALID_PIPE;
+    CFE_SB_PipeId_t                PipeId2 = CFE_SB_INVALID_PIPE;
+    CFE_SB_PipeId_t                PipeId3 = CFE_SB_INVALID_PIPE;
+    CFE_SB_PipeId_t                PipeId4 = CFE_SB_INVALID_PIPE;
     CFE_FT_TestCmdMessage_t        CmdMsg;
     CFE_SB_MsgId_t                 MsgId;
     CFE_SB_Buffer_t *              MsgBuf1;
@@ -233,6 +232,8 @@ void TestMsgBroadcast(void)
     CFE_SB_Buffer_t *              MsgBuf3;
     CFE_SB_Buffer_t *              MsgBuf4;
     const CFE_FT_TestCmdMessage_t *CmdPtr;
+
+    memset(&CmdMsg, 0, sizeof(CmdMsg));
 
     UtPrintf("Testing: MsgLimit enforcement");
 
@@ -247,17 +248,17 @@ void TestMsgBroadcast(void)
     UtAssert_INT32_EQ(CFE_SB_SubscribeEx(CFE_FT_CMD_MSGID, PipeId4, CFE_SB_DEFAULT_QOS, 6), CFE_SUCCESS);
 
     /* Initialize the message content */
-    UtAssert_INT32_EQ(CFE_MSG_Init(&CmdMsg.CmdHeader.Msg, CFE_FT_CMD_MSGID, sizeof(CmdMsg)), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_MSG_Init(CFE_MSG_PTR(CmdMsg.CommandHeader), CFE_FT_CMD_MSGID, sizeof(CmdMsg)), CFE_SUCCESS);
 
     /* Make unique content in each message. Sending should always be successful. */
     CmdMsg.CmdPayload = 0xbabb1e00;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
     CmdMsg.CmdPayload = 0xbabb1e01;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
     CmdMsg.CmdPayload = 0xbabb1e02;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
     CmdMsg.CmdPayload = 0xbabb1e03;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
 
     /* Now receive 1st message from Pipes, actual msg should appear on all (no limit violations here) */
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf1, PipeId1, CFE_SB_POLL), CFE_SUCCESS);
@@ -272,7 +273,7 @@ void TestMsgBroadcast(void)
 
     /* Confirm content */
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf1->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf1;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0xbabb1e00);
 
@@ -288,7 +289,7 @@ void TestMsgBroadcast(void)
 
     /* Confirm content */
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf2->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf2;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0xbabb1e01);
 
@@ -303,7 +304,7 @@ void TestMsgBroadcast(void)
 
     /* Confirm content */
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf3->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf3;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0xbabb1e02);
 
@@ -315,7 +316,7 @@ void TestMsgBroadcast(void)
 
     /* Confirm content */
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf4->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf4;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0xbabb1e03);
 
@@ -326,9 +327,9 @@ void TestMsgBroadcast(void)
 
     /* Send two more messages */
     CmdMsg.CmdPayload = 0xbabb1e04;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
     CmdMsg.CmdPayload = 0xbabb1e05;
-    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(&CmdMsg.CmdHeader.Msg, true), CFE_SUCCESS);
+    UtAssert_INT32_EQ(CFE_SB_TransmitMsg(CFE_MSG_PTR(CmdMsg.CommandHeader), true), CFE_SUCCESS);
 
     /* poll all pipes again, message should appear on all except PipeId2 (Unsubscribed) */
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf1, PipeId1, CFE_SB_POLL), CFE_SUCCESS);
@@ -342,7 +343,7 @@ void TestMsgBroadcast(void)
 
     /* Confirm content */
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf1->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf1;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0xbabb1e04);
 
@@ -357,7 +358,7 @@ void TestMsgBroadcast(void)
 
     /* Confirm content */
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf3->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     CmdPtr = (const CFE_FT_TestCmdMessage_t *)MsgBuf3;
     UtAssert_UINT32_EQ(CmdPtr->CmdPayload, 0xbabb1e05);
 
@@ -377,12 +378,12 @@ void TestMsgBroadcast(void)
 /* This is a variant of the message transmit API that does not copy */
 void TestZeroCopyTransmitRecv(void)
 {
-    CFE_SB_PipeId_t         PipeId1;
-    CFE_SB_PipeId_t         PipeId2;
+    CFE_SB_PipeId_t         PipeId1 = CFE_SB_INVALID_PIPE;
+    CFE_SB_PipeId_t         PipeId2 = CFE_SB_INVALID_PIPE;
     CFE_SB_Buffer_t *       CmdBuf;
     CFE_SB_Buffer_t *       TlmBuf;
     CFE_SB_Buffer_t *       MsgBuf;
-    CFE_SB_MsgId_t          MsgId;
+    CFE_SB_MsgId_t          MsgId = CFE_SB_INVALID_MSG_ID;
     CFE_MSG_SequenceCount_t SeqCmd1;
     CFE_MSG_SequenceCount_t SeqTlm1;
     CFE_MSG_SequenceCount_t SeqCmd2;
@@ -437,14 +438,14 @@ void TestZeroCopyTransmitRecv(void)
 
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId1, 100), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_CMD_MSGID);
     UtAssert_ADDRESS_EQ(MsgBuf, CmdBuf); /* should be the same actual buffer (not a copy) */
 
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId1, CFE_SB_POLL), CFE_SB_NO_MESSAGE);
 
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId2, 100), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_MSG_GetMsgId(&MsgBuf->Msg, &MsgId), CFE_SUCCESS);
-    CFE_UtAssert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
+    CFE_Assert_MSGID_EQ(MsgId, CFE_FT_TLM_MSGID);
     UtAssert_ADDRESS_EQ(MsgBuf, TlmBuf); /* should be the same actual buffer (not a copy) */
 
     UtAssert_INT32_EQ(CFE_SB_ReceiveBuffer(&MsgBuf, PipeId2, CFE_SB_POLL), CFE_SB_NO_MESSAGE);

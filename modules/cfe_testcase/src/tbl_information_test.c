@@ -1,31 +1,27 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2019 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: tbl_information_test.c
-**
-** Purpose:
-**   Functional test of Table Information APIs
-**
-**   Demonstration of how to register and use the UT assert functions.
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of Table Information APIs
+ *
+ *   Demonstration of how to register and use the UT assert functions.
+ */
 
 /*
  * Includes
@@ -48,9 +44,13 @@ void TestGetStatus(void)
 
 void TestGetInfo(void)
 {
-    UtPrintf("Testing: CFE_TBL_GetInfo");
     CFE_TBL_Info_t TblInfo;
     const char *   BadTblName = "BadTable";
+
+    memset(&TblInfo, 0, sizeof(TblInfo));
+
+    UtPrintf("Testing: CFE_TBL_GetInfo");
+
     UtAssert_INT32_EQ(CFE_TBL_GetInfo(&TblInfo, CFE_FT_Global.RegisteredTblName), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_TBL_GetInfo(NULL, CFE_FT_Global.TblName), CFE_TBL_BAD_ARGUMENT);
     UtAssert_INT32_EQ(CFE_TBL_GetInfo(&TblInfo, BadTblName), CFE_TBL_ERR_INVALID_NAME);
@@ -75,12 +75,13 @@ void TestGetInfo(void)
 
 void TestNotifyByMessage(void)
 {
+    CFE_TBL_Handle_t  SharedTblHandle = CFE_TBL_BAD_TABLE_HANDLE;
+    const char *      SharedTblName   = "SAMPLE_APP.SampleAppTable";
+    CFE_SB_MsgId_t    TestMsgId       = CFE_SB_ValueToMsgId(CFE_TEST_CMD_MID);
+    CFE_MSG_FcnCode_t TestCmdCode     = 0;
+    uint32            TestParameter   = 0;
+
     UtPrintf("Testing: CFE_TBL_NotifyByMessage");
-    CFE_TBL_Handle_t  SharedTblHandle;
-    const char *      SharedTblName = "SAMPLE_APP.SampleAppTable";
-    CFE_SB_MsgId_t    TestMsgId     = CFE_TEST_CMD_MID;
-    CFE_MSG_FcnCode_t TestCmdCode   = 0;
-    uint32            TestParameter = 0;
 
     UtAssert_INT32_EQ(CFE_TBL_NotifyByMessage(CFE_TBL_BAD_TABLE_HANDLE, TestMsgId, TestCmdCode, TestParameter),
                       CFE_TBL_ERR_INVALID_HANDLE);

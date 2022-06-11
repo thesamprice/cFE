@@ -280,10 +280,6 @@ function(prepare)
   string(CONCAT DETAILDESIGN_DOXYFILE_USER_CONTENT ${DETAILDESIGN_DOXYFILE_USER_CONTENT})
   string(CONCAT TGTSYSTEM_DOXYFILE_USER_CONTENT ${TGTSYSTEM_DOXYFILE_USER_CONTENT})
 
-  configure_file("${CFE_SOURCE_DIR}/cmake/cfe-common.doxyfile.in"
-    "${CMAKE_BINARY_DIR}/docs/cfe-common.doxyfile"
-    @ONLY)
-
   # Generate an "empty" osconfig.h file for doxygen purposes
   # this does not have the actual user-defined values, but will
   # have the documentation associated with each macro definition.
@@ -294,7 +290,6 @@ function(prepare)
   # NOTE: the userguide is built against the headers of the default core apps. Even if
   # an alternate version of the module is in use, it should adhere to the same interface.
   set(SUBMODULE_HEADER_PATHS
-    "${osal_MISSION_DIR}/src/os/inc/*.h"
     "${psp_MISSION_DIR}/psp/fsw/inc/*.h"
   )
   foreach(MODULE core_api ${MISSION_CORE_MODULES})
@@ -302,35 +297,36 @@ function(prepare)
   endforeach()
   file(GLOB MISSION_USERGUIDE_HEADERFILES
     ${SUBMODULE_HEADER_PATHS}
-    "${CMAKE_BINARY_DIR}/docs/osconfig-example.h"
   )
 
   string(REPLACE ";" " \\\n" MISSION_USERGUIDE_HEADERFILES "${MISSION_USERGUIDE_HEADERFILES}")
 
-  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/docs/detaildesign")
-  configure_file("${CFE_SOURCE_DIR}/cmake/mission-detaildesign.doxyfile.in"
-    "${CMAKE_BINARY_DIR}/docs/detaildesign/Doxyfile"
+  configure_file("${CFE_SOURCE_DIR}/cmake/cfe-common.doxyfile.in"
+    "${CMAKE_BINARY_DIR}/docs/cfe-common.doxyfile"
+    @ONLY)
+
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/docs/mission-doc")
+  configure_file("${CFE_SOURCE_DIR}/cmake/mission-doc.doxyfile.in"
+    "${CMAKE_BINARY_DIR}/docs/mission-doc/Doxyfile"
     @ONLY)
   add_custom_target(mission-doc doxygen
-    COMMAND echo "Detail Design: file://${CMAKE_BINARY_DIR}/docs/detaildesign/html/index.html"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/docs/detaildesign")
+    COMMAND echo "Detail Design: file://${CMAKE_BINARY_DIR}/docs/mission-doc/html/index.html"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/docs/mission-doc")
 
-  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/docs/users_guide")
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/docs/cfe-usersguide")
   configure_file("${CFE_SOURCE_DIR}/cmake/cfe-usersguide.doxyfile.in"
-    "${CMAKE_BINARY_DIR}/docs/users_guide/Doxyfile"
+    "${CMAKE_BINARY_DIR}/docs/cfe-usersguide/Doxyfile"
     @ONLY)
   add_custom_target(cfe-usersguide doxygen
-    COMMAND echo "Users Guide: file://${CMAKE_BINARY_DIR}/docs/users_guide/html/index.html"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/docs/users_guide")
+    COMMAND echo "Users Guide: file://${CMAKE_BINARY_DIR}/docs/cfe-usersguide/html/index.html"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/docs/cfe-usersguide")
 
   # OSAL API GUIDE include PUBLIC API
   set(OSAL_API_INCLUDE_DIRECTORIES
     "${osal_MISSION_DIR}/src/os/inc"
     "${CMAKE_BINARY_DIR}/docs"
   )
-  add_subdirectory(${osal_MISSION_DIR}/docs/src ${CMAKE_BINARY_DIR}/docs/osalguide)
-  add_custom_target(osalguide)
-  add_dependencies(osalguide osal-apiguide)
+  add_subdirectory(${osal_MISSION_DIR}/docs/src ${CMAKE_BINARY_DIR}/docs/osal-apiguide)
 
   # Pull in any application-specific mission-scope configuration
   # This may include user configuration files such as cfe_mission_cfg.h,
@@ -359,7 +355,7 @@ function(prepare)
   )
   foreach(APP ${MISSION_DEPS})
     list(APPEND VARLIST "${APP}_MISSION_DIR")
-  endforeach(APP ${MISSION_APPS})
+  endforeach()
 
   foreach(SYSVAR ${TGTSYS_LIST})
     list(APPEND VARLIST "BUILD_CONFIG_${SYSVAR}")

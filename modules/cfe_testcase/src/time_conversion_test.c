@@ -1,29 +1,25 @@
-/*************************************************************************
-**
-**      GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**      Copyright (c) 2006-2021 United States Government as represented by
-**      the Administrator of the National Aeronautics and Space Administration.
-**      All Rights Reserved.
-**
-**      Licensed under the Apache License, Version 2.0 (the "License");
-**      you may not use this file except in compliance with the License.
-**      You may obtain a copy of the License at
-**
-**        http://www.apache.org/licenses/LICENSE-2.0
-**
-**      Unless required by applicable law or agreed to in writing, software
-**      distributed under the License is distributed on an "AS IS" BASIS,
-**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**      See the License for the specific language governing permissions and
-**      limitations under the License.
-**
-** File: time_conversion_test.c
-**
-** Purpose:
-**   Functional test of basic Time Conversion APIs
-**
-*************************************************************************/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * \file
+ *   Functional test of basic Time Conversion APIs
+ */
 
 /*
  * Includes
@@ -34,62 +30,25 @@ void TestConvertMET2SCTime(void)
 {
     UtPrintf("Testing: CFE_TIME_MET2SCTime");
 
-    /* Mission Elapsed Time */
-    CFE_TIME_SysTime_t MET;
-    /* MET + SCTF */
-    CFE_TIME_SysTime_t TAI;
-    /* MET + SCTF - Leap Seconds */
-    CFE_TIME_SysTime_t UTC;
-    /* Spacecraft Time */
+    CFE_TIME_SysTime_t METStart;
+    CFE_TIME_SysTime_t METEnd;
+    CFE_TIME_SysTime_t Time;
     CFE_TIME_SysTime_t SCTime;
 
-    OS_time_t start;
-    OS_time_t end;
-    OS_time_t difference;
-
-    /* Print buffers */
-    char timeBuf1[sizeof("yyyy-ddd-hh:mm:ss.xxxxx_")];
-    char timeBuf2[sizeof("yyyy-ddd-hh:mm:ss.xxxxx_")];
-
-    OS_GetLocalTime(&start);
+    CFE_TIME_SysTime_t Range;
 
     /* Get Times */
-    MET = CFE_TIME_GetMET();
-    TAI = CFE_TIME_GetTAI();
-    UTC = CFE_TIME_GetUTC();
+    METStart = CFE_TIME_GetMET();
+    Time     = CFE_TIME_GetTime();
+    METEnd   = CFE_TIME_GetMET();
 
-    OS_GetLocalTime(&end);
+    Range = CFE_TIME_Subtract(METEnd, METStart);
 
     /* Convert - should produce a TAI or UTC at the moment of GetMET() */
-    SCTime = CFE_TIME_MET2SCTime(MET);
-
-    /* write Spacecraft Time into second buffer */
-    CFE_TIME_Print(timeBuf2, SCTime);
-
-    difference = OS_TimeSubtract(end, start);
+    SCTime = CFE_TIME_MET2SCTime(METStart);
 
     /* Check conversion */
-#if (CFE_MISSION_TIME_CFG_DEFAULT_TAI == true)
-    /* SCTime is TAI format */
-
-    /* avoid unused compiler warning */
-    (void)UTC;
-
-    /* write TAI into first buffer */
-    CFE_TIME_Print(timeBuf1, TAI);
-
-    UtAssert_True(TimeInRange(SCTime, TAI, difference), "TAI (%s) = MET2SCTime (%s)", timeBuf1, timeBuf2);
-#else
-    /* SCTime is UTC format */
-
-    /* avoid unused compiler warning */
-    (void)TAI;
-
-    /* write UTC into first buffer */
-    CFE_TIME_Print(timeBuf1, UTC);
-
-    UtAssert_True(TimeInRange(SCTime, UTC, difference), "UTC (%s) = MET2SCTime (%s)", timeBuf1, timeBuf2);
-#endif
+    TimeInRange(SCTime, Time, Range, "MET to SC Time vs default time");
 }
 
 void TestConvertSubSeconds2MicroSeconds(void)

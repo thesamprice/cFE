@@ -1,22 +1,20 @@
-/*
-**  GSC-18128-1, "Core Flight Executive Version 6.7"
-**
-**  Copyright (c) 2006-2019 United States Government as represented by
-**  the Administrator of the National Aeronautics and Space Administration.
-**  All Rights Reserved.
-**
-**  Licensed under the Apache License, Version 2.0 (the "License");
-**  you may not use this file except in compliance with the License.
-**  You may obtain a copy of the License at
-**
-**    http://www.apache.org/licenses/LICENSE-2.0
-**
-**  Unless required by applicable law or agreed to in writing, software
-**  distributed under the License is distributed on an "AS IS" BASIS,
-**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-**  See the License for the specific language governing permissions and
-**  limitations under the License.
-*/
+/************************************************************************
+ * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+ *
+ * Copyright (c) 2020 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
 
 /**
  * @file
@@ -213,6 +211,27 @@ void UT_ResetCDS(void);
 ******************************************************************************/
 /* Reset pool buffer array index */
 void UT_ResetPoolBufferIndex(void);
+
+/*****************************************************************************/
+/**
+** \brief Sets up stubs to follow the intended path through a dispatch call
+**
+** \par Description
+**        Configures the MSG stubs appropriately so the intended command handler
+**        is called when invoking a "TaskPipe" handler function.
+**
+**        DispatchReq should point to the intended MsgId + command code to set up.
+**
+**        If DispatchReq is NULL, then any existing stub config is cleared/reset.
+**
+**        If ExpectFailureEvent is set true, then it sets a second stub registration
+**        for both MsgId and FcnCode to account for failure event reporting
+**
+** \returns
+**        This function does not return a value.
+******************************************************************************/
+void UT_SetupBasicMsgDispatch(const UT_TaskPipeDispatchId_t *DispatchReq, CFE_MSG_Size_t MsgSize,
+                              bool ExpectFailureEvent);
 
 /*****************************************************************************/
 /**
