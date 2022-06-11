@@ -45,7 +45,7 @@
 
 # Squelch a warning when building on Win32/Cygwin
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
-
+set(C_FLAGS "-wno-nonportable-include-path")
 # Add a path for any locally-supplied CMake modules
 # These would typically be a part of any custom PSPs in use.
 # (this is not required, and the directory can be empty/nonexistent)
@@ -61,7 +61,7 @@ cmake_minimum_required(VERSION 3.5)
 # indicate that now.  Doing this early initializes the CFLAGS
 # so they won't change later.
 # Note: this line defines the CFE_SOURCE_DIR variable.
-project(CFE C)
+project(CFE C CXX)
 
 # Allow unit tests to be added by any recipe
 enable_testing()
