@@ -537,6 +537,8 @@ function(prepare)
             "${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
       # Export the variables determined here up to the parent scope
       SET(CFE_SYSTEM_PSPNAME      "pc-linux" PARENT_SCOPE)
+    elseif ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+      SET(CFE_SYSTEM_PSPNAME      "pc-qt" PARENT_SCOPE)
     else ()
       # Not cross compiling and host system is not recognized
       message(FATAL_ERROR "Do not know how to set CFE_SYSTEM_PSPNAME on ${CMAKE_SYSTEM_NAME} system")
