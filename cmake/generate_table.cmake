@@ -28,22 +28,33 @@ execute_process(COMMAND ${CMAKE_AR} t "${LIB}"
 if (NOT RESULT EQUAL 0)
     message(FATAL_ERROR "Failure running ${CMAKE_AR} t ${LIB}")
 endif()
+# Only use the last object returned. some operating systems return multiple objects
+string(REPLACE " " ";" OBJNAME ${OBJNAME})
+string(REPLACE "\n" ";" OBJNAME ${OBJNAME})
+list(GET OBJNAME -1 OBJNAME)
 
 # Next run "ar x" to extract that file.
 execute_process(COMMAND ${CMAKE_AR} x "${LIB}" "${OBJNAME}"
     RESULT_VARIABLE RESULT
 )
 if (NOT RESULT EQUAL 0)
-    message(FATAL_ERROR "Failure running ${CMAKE_AR} x ${LIB} ${OBJNAME}")
+    message(FATAL_ERROR "Failure running ${CMAKE_AR} x | ${LIB} | ${OBJNAME} | ")
 endif()
 
+
 # Finally invoke the table tool (elf2cfetbl) on the object
-message("Executing Process: ${TBLTOOL} ${OBJNAME}")
-execute_process(COMMAND ${TBLTOOL} "${OBJNAME}"
-    RESULT_VARIABLE RESULT
-)
-if (NOT RESULT EQUAL 0)
-    message(FATAL_ERROR "Failure running ${TBLTOOL}")
+
+if (APPLE)
+    #TODO 
+else()
+    message(" Executing Process: ${TBLTOOL} ${OBJNAME}")
+    execute_process(COMMAND ${TBLTOOL} "${OBJNAME}"
+        RESULT_VARIABLE RESULT
+    )
+
+    if (NOT RESULT EQUAL 0)
+        message(FATAL_ERROR "Failure running ${TBLTOOL}")
+    endif()
 endif()
 
 message("Successfully converted ${LIB} to a CFE table")
